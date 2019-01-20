@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="tesla_wpf.Route.View.TypingGame"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:tesla_wpf.Route.View"
+             mc:Ignorable="d" 
+             xmlns:vm ="clr-namespace:tesla_wpf.Route.ViewModel"
+             d:DataContext="{d:DesignInstance vm:TypingGameViewModel}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Rectangle Fill="White" Width="800" Height="180" RadiusX="6" RadiusY="6" VerticalAlignment="Top" />
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="80"/>
+                <RowDefinition Height="80"/>
+            </Grid.RowDefinitions>
+            <ListBox Grid.Row="0" ItemsSource="{Binding Row1Words}">
+                <ListBox.Template>
+                    <ControlTemplate TargetType="{x:Type ListBox}">
+                        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                            <WrapPanel Orientation="Horizontal" IsItemsHost="True" ScrollViewer.CanContentScroll="True"/>
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </ListBox.Template>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" Background="#dddddd" FontWeight="Bold"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+    </Grid>
+</UserControl>
+    

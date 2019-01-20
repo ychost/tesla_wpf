@@ -13,12 +13,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace tesla_wpf {
+namespace tesla_wpf.Route.View {
     /// <summary>
-    /// MainWindow.xaml 的交互逻辑
+    /// HomeView.xaml 的交互逻辑
     /// </summary>
-    public partial class MainWindow : Window {
-        public MainWindow() {
+    public partial class HomeView : UserControl {
+        public HomeView() {
             InitializeComponent();
         }
     }

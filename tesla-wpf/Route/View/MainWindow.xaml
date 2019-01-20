@@ -1,0 +1,97 @@
+﻿<Window x:Class="tesla_wpf.Route.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:tesla_wpf.Route.View"
+        xmlns:dockablz="http://dragablz.net/winfx/xaml/dockablz"
+        xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:vm="clr-namespace:tesla_wpf.Route.ViewModel"
+        mc:Ignorable="d"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal" 
+        TextOptions.TextRenderingMode="Auto"
+        WindowStyle="None"
+        xmlns:model="clr-namespace:tesla_wpf.Model"
+        d:DesignHeight="1080"
+        d:DesignWidth="1920"
+        Background="{DynamicResource MaterialDesignPaper}"
+        d:DataContext="{d:DesignInstance vm:MainWindowViewModel}"
+        >
+
+    <materialDesign:DialogHost Visibility="Visible" Identifier="RootDialog">
+        <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
+            <materialDesign:DrawerHost.LeftDrawerContent>
+                <DockPanel MinWidth="212">
+                    <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
+                    HorizontalAlignment="Right"
+                    DockPanel.Dock="Top"
+                    IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" />
+
+
+                    <ListBox x:Name="DemoItemsListBox" Margin="0 16 0 16" SelectedIndex="0"
+                             SelectedValue="{Binding SelectedMenu}" 
+                             Panel.ZIndex="1"                     
+                             ItemsSource="{Binding MenuItems}"
+                             PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp" >
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="model:MenuItem">
+                                <TextBlock Text="{Binding Name}" Margin="32 0 32 0" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+            </materialDesign:DrawerHost.LeftDrawerContent>
+
+            <DockPanel>
+                <materialDesign:ColorZone Padding="16" materialDesign:ShadowAssist.ShadowDepth="Depth5"
+                MouseLeftButtonDown="DragWindow_LeftButton"
+                MouseDoubleClick="MaxWindow_DoubleClick" Mode="PrimaryDark" DockPanel.Dock="Top">
+                    <DockPanel>
+                        <materialDesign:PopupBox x:Name="popubox" DockPanel.Dock="Right" PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
+                            <StackPanel>
+                                <Button Content="最大化" Click="MaxWindow" />
+                                <Button Content="最小化" Click="MinWindow" />
+                                <Button Content="退出" Click="CloseWindow" />
+                            </StackPanel>
+                        </materialDesign:PopupBox>
+                        <StackPanel Orientation="Horizontal">
+                            <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
+                                          IsChecked="{Binding Path=MenuIsChecked}"
+                                        x:Name="MenuToggleButton"/>
+                            <TextBlock VerticalAlignment="Center" Margin="16 0 0 0" Text="牛逼的后台管理" />
+                        </StackPanel>
+                    </DockPanel>
+                </materialDesign:ColorZone>
+                <dockablz:Layout>
+                    <dragablz:TabablzControl BorderThickness="0" 
+                                             Margin="0,-1,0,1" 
+                                             FixedHeaderCount="1"
+                                             ShowDefaultCloseButton="True"
+                                             ItemsSource="{Binding TabItems}"
+                                             SelectedValue="{Binding SelectedTab}"
+                                             x:Name="TabControl">
+                        <dragablz:TabablzControl.InterTabController>
+                            <dragablz:InterTabController />
+                        </dragablz:TabablzControl.InterTabController>
+
+                        <dragablz:TabablzControl.HeaderItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Header}"/>
+                            </DataTemplate>
+                        </dragablz:TabablzControl.HeaderItemTemplate>
+                        <dragablz:TabablzControl.ContentTemplate>
+                            <DataTemplate>
+                                <ContentPresenter Content="{Binding Content}"/>
+                            </DataTemplate>
+                        </dragablz:TabablzControl.ContentTemplate>
+                    </dragablz:TabablzControl>
+                </dockablz:Layout>
+            </DockPanel>
+        </materialDesign:DrawerHost>
+    </materialDesign:DialogHost>
+
+</Window>
