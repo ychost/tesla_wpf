@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tesla-wpf", "tesla-wpf\tesla-wpf.csproj", "{D778FF88-559F-4DA7-B362-19343DED1CF6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D778FF88-559F-4DA7-B362-19343DED1CF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D778FF88-559F-4DA7-B362-19343DED1CF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D778FF88-559F-4DA7-B362-19343DED1CF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D778FF88-559F-4DA7-B362-19343DED1CF6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BA1131A6-641B-4810-9307-3385FA4696B3}
+	EndGlobalSection
+EndGlobal
