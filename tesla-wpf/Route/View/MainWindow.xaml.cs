@@ -79,6 +79,21 @@ namespace tesla_wpf.Route.View {
             }
         }
 
-       
+        /// <summary>
+        /// 选中菜单并切换
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Menu_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) {
+            if (e == null) {
+                return;
+            }
+            var menuItem = e.NewValue as tesla_wpf.Model.MenuItem;
+            if (menuItem.MenuType == Model.MenuType.View) {
+                var vm = this.DataContext as MainWindowViewModel;
+                vm.MenuIsChecked = false;
+                vm.SelectedMenu = menuItem;
+            }
+        }
     }
 }

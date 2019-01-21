@@ -19,31 +19,59 @@
         d:DesignHeight="1080"
         d:DesignWidth="1920"
         Background="{DynamicResource MaterialDesignPaper}"
-        d:DataContext="{d:DesignInstance vm:MainWindowViewModel}"
+        d:DataContext="{Binding Source={StaticResource ViewModel}}"
+        AllowsTransparency="True"
         >
+    <Window.Resources>
+        <vm:MainWindowViewModel x:Key="ViewModel"/>
+    </Window.Resources>
 
     <materialDesign:DialogHost Visibility="Visible" Identifier="RootDialog">
         <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
-            <materialDesign:DrawerHost.LeftDrawerContent>
-                <DockPanel MinWidth="212">
-                    <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
-                    HorizontalAlignment="Right"
-                    DockPanel.Dock="Top"
-                    IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" />
+            <materialDesign:DrawerHost.LeftDrawerContent >
+                <StackPanel Width="260" x:Name="MenuStackPanel">
+                    <Grid>
+                        <Image Height="140" 
+                               Width="{Binding ActualWidth,ElementName=MenuStackPanel}" 
+                               Stretch="Fill" Source="/tesla-wpf;component/Assets/mountains.jpg"/>
 
-
-                    <ListBox x:Name="DemoItemsListBox" Margin="0 16 0 16" SelectedIndex="0"
-                             SelectedValue="{Binding SelectedMenu}" 
-                             Panel.ZIndex="1"                     
-                             ItemsSource="{Binding MenuItems}"
-                             PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp" >
-                        <ListBox.ItemTemplate>
-                            <DataTemplate DataType="model:MenuItem">
-                                <TextBlock Text="{Binding Name}" Margin="32 0 32 0" />
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </DockPanel>
+                        <Button Width="60" Height="60"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Background="{x:Null}"
+                        BorderBrush="{x:Null}"
+                        Command="{Binding CloseMenuCmd}"
+                                >
+                        </Button>
+                        <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Width="35"
+                            Height="35"
+                            Foreground="White"
+                            Background="{x:Null}"
+                            BorderBrush="{x:Null}"
+                            IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" />
+                    </Grid>
+                    <TreeView
+                        Grid.Row="0"
+                        ItemsSource="{Binding MenuItems}"
+                        MinWidth="220"
+                        SelectedItemChanged="Menu_SelectedItemChanged">
+                        <TreeView.Resources>
+                            <HierarchicalDataTemplate
+                                    DataType="{x:Type model:MenuItem}"
+                                    ItemsSource="{Binding SubMenus}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon VerticalAlignment="Center" Kind="{Binding Icon}"/>
+                                    <TextBlock
+                                  Text="{Binding Name}"
+                                  Margin="3 2" />
+                                </StackPanel>
+                            </HierarchicalDataTemplate>
+                        </TreeView.Resources>
+                    </TreeView>
+                </StackPanel>
             </materialDesign:DrawerHost.LeftDrawerContent>
 
             <DockPanel>
@@ -77,7 +105,6 @@
                         <dragablz:TabablzControl.InterTabController>
                             <dragablz:InterTabController />
                         </dragablz:TabablzControl.InterTabController>
-
                         <dragablz:TabablzControl.HeaderItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Header}"/>

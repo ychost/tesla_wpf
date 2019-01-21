@@ -20,5 +20,21 @@ namespace tesla_wpf.Route.ViewModel {
         /// </summary>
         public List<string> Row2Words { get => GetProperty<List<string>>(); set => SetProperty(value); }
 
+        /// <summary>
+        /// 运行时初始化
+        /// </summary>
+        protected override void InitRuntimeData() {
+        }
+
+
+        /// <summary>
+        /// 设计时初始化
+        /// </summary>
+        protected override void InitDesignData() {
+            Row1Words = new List<string>() {
+                    "hello","world"
+                };
+        }
+
     }
 }

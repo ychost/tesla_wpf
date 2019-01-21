@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Dragablz;
 using tesla_wpf.Extensions;
 using tesla_wpf.Model;
@@ -29,6 +30,16 @@ namespace tesla_wpf.Route.ViewModel {
         /// 菜单列表
         /// </summary>
         public MenuItem[] MenuItems { get => GetProperty<MenuItem[]>(); set => SetProperty(value); }
+
+        public ICommand CloseMenuCmd => new MdCommand(closeMenuExec);
+
+        /// <summary>
+        /// 关闭菜单
+        /// </summary>
+        /// <param name="obj"></param>
+        private void closeMenuExec(object obj) {
+            MenuIsChecked = false;
+        }
 
         /// <summary>
         /// 用户切换了菜单，那么也要切换 Tab 选项
@@ -65,14 +76,36 @@ namespace tesla_wpf.Route.ViewModel {
         /// <param name="token"></param>
         public MainWindowViewModel(string token) {
             Token = token;
+        }
+
+        public MainWindowViewModel() {
+
+        }
+
+        protected override void InitRuntimeData() {
+            InitDesignData();
+        }
+
+        protected override void InitDesignData() {
             MenuItems = new MenuItem[] {
-                new MenuItem("tab1",new HomeView()),
+                new MenuItem("tab1"){
+                    SubMenus = new ObservableCollection<MenuItem>() {
+                        new MenuItem("tab1_sub"){
+                            SubMenus = new ObservableCollection<MenuItem>() {
+                                new MenuItem("tab1_sub_sub",new HomeView())
+                            }
+                        },
+                    }
+                },
                 new MenuItem("tab2",new HomeView()),
                 new MenuItem("tab3",new HomeView()),
                 new MenuItem("tab4",new HomeView()),
             };
             TabItems.Add(MenuItems[0].ToTabItem());
+            SelectedMenu = MenuItems[1];
+            MenuIsChecked = false;
         }
     }
+
 
 }

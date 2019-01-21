@@ -6,8 +6,11 @@
              xmlns:local="clr-namespace:tesla_wpf.Route.View"
              mc:Ignorable="d" 
              xmlns:vm ="clr-namespace:tesla_wpf.Route.ViewModel"
-             d:DataContext="{d:DesignInstance vm:TypingGameViewModel}"
+             d:DataContext="{Binding Source={StaticResource ViewModel}}"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <vm:TypingGameViewModel x:Key="ViewModel"/>
+    </UserControl.Resources>
     <Grid>
         <Rectangle Fill="White" Width="800" Height="180" RadiusX="6" RadiusY="6" VerticalAlignment="Top" />
         <Grid>

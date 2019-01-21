@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="tesla_wpf.Component.GameTopListItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:tesla_wpf.Component"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <materialDesign:Card Width="200">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="140" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Image Height="140" Width="196" Stretch="UniformToFill" Source="/tesla-wpf;component/Assets/mountains.jpg" x:Name="CoverImage"/>
+                <Button Grid.Row="0" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"
+                      HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0 0 16 -20">
+                    <materialDesign:PackIcon Kind="Bike" />
+                </Button>
+                <StackPanel Grid.Row="1" Margin="8 24 8 0" Height="85">
+                    <TextBlock FontWeight="Bold" x:Name="TitleTextBlock"> Cycling </TextBlock>
+                    <TextBlock TextWrapping="Wrap" x:Name="DescriptionTextBlock" VerticalAlignment="Top" HorizontalAlignment="Left">
+                        A great way to keep fit and for get about the constant grind of IT.
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Right" Grid.Row="2" Orientation="Horizontal" Margin="8">
+                    <Button Style="{StaticResource MaterialDesignToolButton}"
+                    Width="30" Padding="2 0 2 0" materialDesign:RippleAssist.IsCentered="True">
+                        <materialDesign:PackIcon Kind="ShareVariant" />
+                    </Button>
+                    <Button Style="{StaticResource MaterialDesignToolButton}"
+                    Width="30" Padding="2 0 2 0" materialDesign:RippleAssist.IsCentered="True">
+                        <materialDesign:PackIcon Kind="Heart" />
+                    </Button>
+                    <materialDesign:PopupBox Style="{StaticResource MaterialDesignToolPopupBox}" Padding="2 0 2 0">
+                        <StackPanel>
+                            <Button Content="查看" Click="ViewGame_Click"/>
+                            <Button Content="编辑" Click="EditGame_Click" x:Name="EditButton" />
+                        </StackPanel>
+                    </materialDesign:PopupBox>
+                </StackPanel>
+            </Grid>
+        </materialDesign:Card>
+    </Grid>
+</UserControl>

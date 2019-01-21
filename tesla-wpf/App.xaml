@@ -22,9 +22,9 @@
 
                 <!--ToastNotification theme-->
                 <ResourceDictionary Source="pack://application:,,,/ToastNotifications.Messages;component/Themes/Default.xaml" />
-
+                <ResourceDictionary Source="Theme/TabStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <Style TargetType="{x:Type dragablz:TabablzControl}" BasedOn="{StaticResource MaterialDesignTabablzControlStyle}" />
+        
         </ResourceDictionary>
     </Application.Resources>
 </Application>

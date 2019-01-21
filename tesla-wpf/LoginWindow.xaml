@@ -17,11 +17,13 @@
         TextElement.FontSize="13"
         TextOptions.TextFormattingMode="Ideal" 
         TextOptions.TextRenderingMode="Auto"
-        Background="{DynamicResource MaterialDesignPaper}"
+        AllowsTransparency="True"
+        Background="Transparent"
         mc:Ignorable="d"
         >
         <Grid >
-            <Rectangle Height="280"  VerticalAlignment="Top" MouseLeftButtonDown="Window_Move">
+        <Rectangle Width="350" Height="500" x:Name="BackgroundRect" Fill="{DynamicResource MaterialDesignPaper}" RadiusX="5" RadiusY="5"/>
+        <Rectangle Height="280" RadiusX="{Binding RadiusX,ElementName=BackgroundRect}"  RadiusY="{Binding RadiusY,ElementName=BackgroundRect}"  VerticalAlignment="Top" MouseLeftButtonDown="Window_Move">
                 <Rectangle.Fill>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="#FF2281D1"/>
