@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="tesla_wpf.Component.AvatarList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:tesla_wpf.Component"
+             mc:Ignorable="d" 
+             >
+    <Grid x:Name="AvatarWrapperGrid">
+        <Grid Height="25" Width="25" Margin="0,0,0,0" HorizontalAlignment="Left" x:Name="AvatarGrid1" Cursor="Hand" >
+            <Ellipse Fill="{DynamicResource PrimaryHueDarkBrush}"/>
+            <Ellipse >
+                <Ellipse.Fill>
+                    <ImageBrush x:Name="Avatar1" Stretch="Uniform" />
+                </Ellipse.Fill>
+            </Ellipse>
+        </Grid>
+        <Grid Height="{Binding Height, ElementName=AvatarGrid1}" Width="{Binding Width,ElementName=AvatarGrid1}"
+        x:Name="AvatarGrid2"
+        Cursor="Hand"
+              Margin="15,0,0,0" HorizontalAlignment="Left">
+            <Ellipse Fill="{DynamicResource PrimaryHueDarkBrush}"/>
+            <Ellipse >
+                <Ellipse.Fill>
+                    <ImageBrush x:Name="Avatar2" Stretch="Uniform" />
+                </Ellipse.Fill>
+            </Ellipse>
+        </Grid>
+        <Grid  Margin="25,0,0,0" HorizontalAlignment="Left"
+        Cursor="Hand"
+              Height="{Binding Height, ElementName=AvatarGrid1}" Width="{Binding Width,ElementName=AvatarGrid1}"
+              x:Name="AvatarGrid3"
+              >
+            <Ellipse Fill="{DynamicResource PrimaryHueDarkBrush}"/>
+            <Ellipse >
+                <Ellipse.Fill>
+                    <ImageBrush x:Name="Avatar3" Stretch="Uniform" />
+                </Ellipse.Fill>
+            </Ellipse>
+        </Grid>
+    </Grid>
+
+</UserControl>

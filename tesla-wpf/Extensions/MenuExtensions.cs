@@ -17,10 +17,11 @@ namespace tesla_wpf.Extensions {
         /// </summary>
         /// <param name="menu"></param>
         /// <returns></returns>
-        public static HeaderedItemViewModel ToTabItem(this MenuItem menu) {
-            return new HeaderedItemViewModel() {
+        public static TabItem ToTabItem(this MenuItem menu) {
+            return new TabItem() {
                 Header = menu.Name,
-                Content = menu.Content
+                Content = menu.Content,
+                BindMenuId = menu.Id
             };
         }
     }

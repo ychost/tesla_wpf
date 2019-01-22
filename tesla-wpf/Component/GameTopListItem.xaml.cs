@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using MaterialDesignThemes.Wpf;
+using tesla_wpf.Model.Setting;
+using Vera.Wpf.Lib.Component;
+using Vera.Wpf.Lib.Helper;
 
 namespace tesla_wpf.Component {
     /// <summary>
@@ -23,6 +28,12 @@ namespace tesla_wpf.Component {
         /// </summary>
         public GameTopListItem() {
             InitializeComponent();
+            AvatarList.Users = new List<User>() {
+                    new User() {
+                        Name="金木",
+                        Avatar = "https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=585681951,2855353546&fm=26&gp=0.jpg"
+                    }
+                };
         }
 
         /// <summary>
@@ -127,6 +138,10 @@ namespace tesla_wpf.Component {
         }
 
         private void EditGame_Click(object sender, RoutedEventArgs e) {
+
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e) {
 
         }
     }

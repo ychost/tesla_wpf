@@ -16,10 +16,13 @@
         TextOptions.TextRenderingMode="Auto"
         WindowStyle="None"
         xmlns:model="clr-namespace:tesla_wpf.Model"
+     
         d:DesignHeight="1080"
         d:DesignWidth="1920"
         Background="{DynamicResource MaterialDesignPaper}"
         d:DataContext="{Binding Source={StaticResource ViewModel}}"
+         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:behaviours="clr-namespace:Vera.Wpf.Lib.Mvvm;assembly=Vera.Wpf.Lib"
         AllowsTransparency="True"
         >
     <Window.Resources>
@@ -55,18 +58,21 @@
                     </Grid>
                     <TreeView
                         Grid.Row="0"
+                        Margin="-7,0,0,0"
+                        x:Name="MenuTree"
                         ItemsSource="{Binding MenuItems}"
                         MinWidth="220"
-                        SelectedItemChanged="Menu_SelectedItemChanged">
+                        >
+                        <i:Interaction.Behaviors>
+                            <behaviours:BindableSelectedItemBehavior SelectedValue="{Binding SelectedMenu, Mode=TwoWay}" />
+                        </i:Interaction.Behaviors>
                         <TreeView.Resources>
                             <HierarchicalDataTemplate
                                     DataType="{x:Type model:MenuItem}"
                                     ItemsSource="{Binding SubMenus}">
                                 <StackPanel Orientation="Horizontal">
                                     <materialDesign:PackIcon VerticalAlignment="Center" Kind="{Binding Icon}"/>
-                                    <TextBlock
-                                  Text="{Binding Name}"
-                                  Margin="3 2" />
+                                    <TextBlock Text="{Binding Name}" />
                                 </StackPanel>
                             </HierarchicalDataTemplate>
                         </TreeView.Resources>

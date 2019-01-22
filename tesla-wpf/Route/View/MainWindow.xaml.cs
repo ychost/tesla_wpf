@@ -13,7 +13,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using MaterialDesignThemes.Wpf;
 using tesla_wpf.Route.ViewModel;
+using Vera.Wpf.Lib.Component;
 
 namespace tesla_wpf.Route.View {
     /// <summary>
@@ -68,17 +70,6 @@ namespace tesla_wpf.Route.View {
             MenuToggleButton.IsChecked = false;
         }
 
-
-        private void OnCopy(object sender, ExecutedRoutedEventArgs e) {
-            if (e.Parameter is string stringValue) {
-                try {
-                    Clipboard.SetDataObject(stringValue);
-                } catch (Exception ex) {
-                    Trace.WriteLine(ex.ToString());
-                }
-            }
-        }
-
         /// <summary>
         /// 选中菜单并切换
         /// </summary>
@@ -86,13 +77,13 @@ namespace tesla_wpf.Route.View {
         /// <param name="e"></param>
         private void Menu_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) {
             if (e == null) {
-                return;
-            }
-            var menuItem = e.NewValue as tesla_wpf.Model.MenuItem;
-            if (menuItem.MenuType == Model.MenuType.View) {
-                var vm = this.DataContext as MainWindowViewModel;
-                vm.MenuIsChecked = false;
-                vm.SelectedMenu = menuItem;
+                //    return;
+                //}
+                //var menuItem = e.NewValue as tesla_wpf.Model.MenuItem;
+                //if (menuItem.MenuType == Model.MenuType.View) {
+                //    var vm = this.DataContext as MainWindowViewModel;
+                //    vm.MenuIsChecked = false;
+                //    vm.SelectedMenu = menuItem;
             }
         }
     }

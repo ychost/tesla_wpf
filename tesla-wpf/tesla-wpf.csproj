@@ -98,7 +98,11 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -126,17 +130,28 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Component\AvatarList.xaml.cs">
+      <DependentUpon>AvatarList.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Component\GameTopListItem.xaml.cs">
       <DependentUpon>GameTopListItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Extensions\MenuExtensions.cs" />
     <Compile Include="Extensions\NotifyExtensions.cs" />
+    <Compile Include="Extensions\VisualTreeHelperExtensions.cs" />
+    <Compile Include="Helper\AssetsHelper.cs" />
+    <Compile Include="Model\GameTop\Game.cs" />
     <Compile Include="Model\MenuItem.cs" />
+    <Compile Include="Model\MenuView.cs" />
     <Compile Include="Model\Setting\User.cs" />
-    <Compile Include="Route\DesignViewModel\TypingGameDvm.cs" />
+    <Compile Include="Model\TabItem.cs" />
+    <Compile Include="Route\ViewModel\GameTopListViewModel.cs" />
     <Compile Include="Route\ViewModel\HomeViewModel.cs" />
     <Compile Include="Route\ViewModel\MainWindowViewModel.cs" />
     <Compile Include="Route\ViewModel\TypingGameViewModel.cs" />
+    <Compile Include="Route\View\GameTopList.xaml.cs">
+      <DependentUpon>GameTopList.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Route\View\HomeView.xaml.cs">
       <DependentUpon>HomeView.xaml</DependentUpon>
     </Compile>
@@ -146,6 +161,10 @@
     <Compile Include="Route\View\TypingGame.xaml.cs">
       <DependentUpon>TypingGame.xaml</DependentUpon>
     </Compile>
+    <Page Include="Component\AvatarList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Component\GameTopListItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -162,6 +181,10 @@
       <DependentUpon>LoginWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Route\View\GameTopList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Route\View\HomeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -207,7 +230,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Helper\" />
+    <Folder Include="Toolkit\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\home.png" />
@@ -220,6 +243,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\mountains.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\user.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.linux.1.1.11\build\net35\SQLitePCLRaw.lib.e_sqlite3.linux.targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.linux.1.1.11\build\net35\SQLitePCLRaw.lib.e_sqlite3.linux.targets')" />
