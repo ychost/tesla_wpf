@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
+using tesla_wpf.Helper;
+using tesla_wpf.Model.Setting;
 
 namespace tesla_wpf.Model.Game {
     /// <summary>
@@ -11,5 +14,24 @@ namespace tesla_wpf.Model.Game {
     public class Game {
         public string Name { get; set; }
         public string Description { get; set; }
+        public string Cover { get; set; }
+        /// <summary>
+        /// 排行前三的用户
+        /// </summary>
+        public List<User> Top3Users { get; set; }
+
+        private ImageSource coverImage;
+        public ImageSource CoverImage {
+            get {
+                try {
+                    if (coverImage == null) {
+                        coverImage = AssetsHelper.FetchImage(Cover);
+                    }
+                } catch {
+                    return AssetsHelper.OopsImageSource;
+                }
+                return coverImage;
+            }
+        }
     }
 }

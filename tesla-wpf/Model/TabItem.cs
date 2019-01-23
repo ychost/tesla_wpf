@@ -12,7 +12,7 @@ namespace tesla_wpf.Model {
     /// </summary>
     public class TabItem : BaseViewModel {
         public string Header { get => GetProperty<string>(); set => SetProperty(value); }
-        public IMenuView Content { get => GetProperty<IMenuView>(); set => SetProperty(value); } 
+        public IMenu Content { get => GetProperty<IMenu>(); set => SetProperty(value); } 
         /// <summary>
         /// 关联的菜单 Id
         /// </summary>

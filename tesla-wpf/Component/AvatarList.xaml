@@ -11,7 +11,7 @@
             <Ellipse Fill="{DynamicResource PrimaryHueDarkBrush}"/>
             <Ellipse >
                 <Ellipse.Fill>
-                    <ImageBrush x:Name="Avatar1" Stretch="Uniform" />
+                    <ImageBrush  x:Name="Avatar1" Stretch="Uniform" />
                 </Ellipse.Fill>
             </Ellipse>
         </Grid>
@@ -22,7 +22,7 @@
             <Ellipse Fill="{DynamicResource PrimaryHueDarkBrush}"/>
             <Ellipse >
                 <Ellipse.Fill>
-                    <ImageBrush x:Name="Avatar2" Stretch="Uniform" />
+                    <ImageBrush   x:Name="Avatar2" Stretch="Uniform" />
                 </Ellipse.Fill>
             </Ellipse>
         </Grid>

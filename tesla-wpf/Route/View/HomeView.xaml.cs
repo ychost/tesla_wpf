@@ -18,9 +18,6 @@ namespace tesla_wpf.Route.View {
     /// <summary>
     /// HomeView.xaml 的交互逻辑
     /// </summary>
-    public partial class HomeView : UserControl, IMenuView {
-        public void LazyInitialize() {
-            InitializeComponent();
-        }
+    public partial class HomeView : UserControl, IMenu {
     }
 }

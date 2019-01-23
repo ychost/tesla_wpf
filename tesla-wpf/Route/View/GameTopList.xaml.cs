@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,21 +22,24 @@ namespace tesla_wpf.Route.View {
     /// <summary>
     /// GameTopList.xaml 的交互逻辑
     /// </summary>
-    public partial class GameTopList : UserControl, IMenuView {
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public void LazyInitialize() {
-            ViewHelper.ExecWithLoadingDialog(initialize);
+    public partial class GameTopList : UserControl, IMenuInit, IMenuActive, IMenuInActive, IMenuDestroy {
+        public void OnActive(object param = null) {
+            Console.WriteLine("Active");
         }
 
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        void initialize() {
+        public void OnDestroy(object param = null) {
+            this.DataContext = null;
+            Console.WriteLine("Destroy");
+        }
+
+        public void OnInActive(object param = null) {
+            Console.WriteLine("InActive");
+        }
+
+        public void OnInit(object param = null) {
+            Console.WriteLine("Init");
             InitializeComponent();
-            DataContext = new GameTopListViewModel();
+            this.DataContext = new GameTopListViewModel();
         }
     }
 }

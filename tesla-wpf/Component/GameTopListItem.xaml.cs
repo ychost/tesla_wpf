@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MaterialDesignThemes.Wpf;
+using tesla_wpf.Helper;
 using tesla_wpf.Model.Setting;
 using Vera.Wpf.Lib.Component;
 using Vera.Wpf.Lib.Helper;
@@ -28,13 +29,16 @@ namespace tesla_wpf.Component {
         /// </summary>
         public GameTopListItem() {
             InitializeComponent();
-            AvatarList.Users = new List<User>() {
-                    new User() {
-                        Name="金木",
-                        Avatar = "https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=585681951,2855353546&fm=26&gp=0.jpg"
-                    }
-                };
         }
+
+        /// <summary>
+        /// 排行前三的用户
+        /// </summary>
+        public List<User> Top3Users {
+            get { return (List<User>)GetValue(Top3UsersProperty); }
+            set { SetValue(Top3UsersProperty, value); }
+        }
+
 
         /// <summary>
         /// 游戏封面
@@ -87,6 +91,17 @@ namespace tesla_wpf.Component {
             set { SetValue(CanEditProperty, value); }
         }
 
+        
+        private void ViewGame_Click(object sender, RoutedEventArgs e) {
+            OnViewGameCmd?.Execute(null);
+        }
+
+        private void EditGame_Click(object sender, RoutedEventArgs e) {
+            OnEditGameCmd?.Execute(null);
+        }
+
+
+
         // Using a DependencyProperty as the backing store for CanEdit.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CanEditProperty =
             DependencyProperty.Register("CanEdit", typeof(bool), typeof(GameTopListItem), new PropertyMetadata(false, (d, e) => {
@@ -107,7 +122,12 @@ namespace tesla_wpf.Component {
             DependencyProperty.Register("OnViewGameCmd", typeof(ICommand), typeof(GameTopListItem), new PropertyMetadata(null));
 
 
-
+        // Using a DependencyProperty as the backing store for Top3Users.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty Top3UsersProperty =
+            DependencyProperty.Register("Top3Users", typeof(List<User>), typeof(GameTopListItem), new PropertyMetadata(null, (d, e) => {
+                var view = d as GameTopListItem;
+                view.AvatarList.Users = view.Top3Users;
+            }));
 
         // Using a DependencyProperty as the backing store for Description.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty DescriptionProperty =
@@ -133,16 +153,6 @@ namespace tesla_wpf.Component {
                 view.CoverImage.Source = view.Cover;
             }));
 
-        private void ViewGame_Click(object sender, RoutedEventArgs e) {
 
-        }
-
-        private void EditGame_Click(object sender, RoutedEventArgs e) {
-
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e) {
-
-        }
     }
 }

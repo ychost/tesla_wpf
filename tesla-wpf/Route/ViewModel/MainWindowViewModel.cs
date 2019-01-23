@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ using MaterialDesignThemes.Wpf;
 using tesla_wpf.Extensions;
 using tesla_wpf.Model;
 using tesla_wpf.Route.View;
+using Vera.Wpf.Lib.Helper;
 using Vera.Wpf.Lib.Mvvm;
 
 namespace tesla_wpf.Route.ViewModel {
@@ -51,17 +53,24 @@ namespace tesla_wpf.Route.ViewModel {
         /// </summary>
         public MenuItem SelectedMenu {
             get => GetProperty<MenuItem>(); set {
-                if (!(value.Content is System.Windows.Controls.UserControl view)) {
-                    return;
-                }
-                // 通过 Tag 来标记，进行延迟初始化
-                if (view.Tag == null || (bool)view.Tag == false) {
-                    view.Tag = true;
-                    value?.Content.LazyInitialize();
-                }
-                if (!SetProperty(value)) {
-                    return;
-                }
+                setSelectedMenu(value);
+            }
+        }
+
+        private void setSelectedMenu(MenuItem value) {
+            if (!(value.Content is System.Windows.Controls.UserControl view)) {
+                return;
+            }
+            // 通过 Tag 来标记，进行延迟初始化
+            if (view.Tag == null || (bool)view.Tag == false) {
+                view.Tag = true;
+                //ViewHelper.ExecWithLoadingDialog(value.Content.Initialize);
+                value.Content.Initialize();
+            }
+            if (!SetProperty(value, nameof(SelectedMenu))) {
+                return;
+            }
+            App.Current.Dispatcher.Invoke(() => {
                 // 关闭菜单
                 MenuIsChecked = false;
                 foreach (var item in TabItems) {
@@ -73,12 +82,25 @@ namespace tesla_wpf.Route.ViewModel {
                 var tabItem = value.ToTabItem();
                 TabItems.Add(tabItem);
                 SelectedTab = tabItem;
-            }
+            });
         }
         /// <summary>
         /// 显示的 Tab
         /// </summary>
-        public TabItem SelectedTab { get => GetProperty<TabItem>(); set => SetProperty(value); }
+        public TabItem SelectedTab {
+            get => GetProperty<TabItem>(); set {
+                var oldTab = GetProperty<TabItem>();
+                // 上个 Tab 冻结
+                // 当前 Tab 激活
+                if (SetProperty(value)) {
+                    oldTab?.Content?.InActive(null);
+                    value?.Content.Active(null);
+                    if (value != null) {
+                        (SelectedMenu, _) = MenuItem.GetMenu(MenuItems, value.BindMenuId, null);
+                    }
+                }
+            }
+        }
 
         public string Token { get; }
         /// <summary>
@@ -93,9 +115,13 @@ namespace tesla_wpf.Route.ViewModel {
 
         }
 
+        /// <summary>
+        /// 初始化
+        /// </summary>
         protected override void InitRuntimeData() {
             MenuItems = new ObservableCollection<MenuItem> {
                 new MenuItem("主页",new HomeView(),PackIconKind.Home),
+                new MenuItem("测试页",new HomeView(),PackIconKind.Home),
                 new MenuItem("游戏",PackIconKind.Gamepad) {
                     SubMenus = new ObservableCollection<MenuItem>() {
                         new MenuItem("游戏排行",new GameTopList(),PackIconKind.GamepadVariant)
@@ -105,17 +131,34 @@ namespace tesla_wpf.Route.ViewModel {
             TabItems.Add(MenuItems[0].ToTabItem());
             SelectedMenu = MenuItems[0];
             // 处理用户删除了某个 Tab
-            TabItems.CollectionChanged += (s, e) => {
-                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove) {
-                    var tab = e.OldItems[0] as TabItem;
-                    var (menu, _) = MenuItem.GetMenu(MenuItems, tab.BindMenuId, null);
-                    (menu.Content as System.Windows.Controls.UserControl).Tag = false;
-                    // 这里必须要等到 UI 更新了之后 SelectedTab 才会刷新
-                    App.Current.Dispatcher.BeginInvoke(new Action(() => {
-                        (SelectedMenu, _) = MenuItem.GetMenu(MenuItems, SelectedTab.BindMenuId, null);
-                    }), System.Windows.Threading.DispatcherPriority.Loaded);
-                }
-            };
+            TabItems.CollectionChanged += disptachTabEvent;
+        }
+
+
+        /// <summary>
+        /// 派遣 Tab 的一些 Add,Remove 等事件
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="e"></param>
+        void disptachTabEvent(object s, NotifyCollectionChangedEventArgs e) {
+            if (e.Action == NotifyCollectionChangedAction.Remove) {
+                // 这里必须要等到 UI 更新了之后 SelectedTab 才会刷新
+                App.Current.Dispatcher.BeginInvoke(new Action(() => {
+                    destroyMenuContent(e.OldItems[0] as TabItem);
+                }), System.Windows.Threading.DispatcherPriority.Loaded);
+            }
+        }
+        /// <summary>
+        /// 当某个 Tab 被销毁了之后，跟着销毁对应菜单的 Content
+        /// </summary>
+        void destroyMenuContent(TabItem tab) {
+            var (menu, _) = MenuItem.GetMenu(MenuItems, tab.BindMenuId, null);
+            // 复位标记
+            (menu.Content as System.Windows.Controls.UserControl).Tag = false;
+            // 销毁视图
+            menu.Content.Destroy();
+            //回收垃圾
+            GC.Collect();
         }
 
 
@@ -136,7 +179,7 @@ namespace tesla_wpf.Route.ViewModel {
                 new MenuItem("tab4",new HomeView()),
             };
             TabItems.Add(MenuItems[0].ToTabItem());
-            SelectedMenu = MenuItems[1];
+            SelectedMenu = MenuItems[0];
             MenuIsChecked = true;
         }
     }

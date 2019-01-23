@@ -26,8 +26,6 @@ namespace tesla_wpf.Component {
         }
 
 
-
-
         public List<User> Users {
             get { return (List<User>)GetValue(UsersProperty); }
             set { SetValue(UsersProperty, value); }

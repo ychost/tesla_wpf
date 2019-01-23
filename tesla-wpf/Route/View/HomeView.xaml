@@ -5,8 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:tesla_wpf.Route.View"
              mc:Ignorable="d" 
+
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <TextBlock Text="我是主页" />
+        <TextBlock Text="我是主页"  x:Name="TestTextBlock"/>
     </Grid>
 </UserControl>

@@ -32,7 +32,7 @@ namespace tesla_wpf.Model {
         /// <summary>
         /// 菜单的 View
         /// </summary>
-        public IMenuView Content { get => GetProperty<IMenuView>(); set => SetProperty(value); }
+        public IMenu Content { get => GetProperty<IMenu>(); set => SetProperty(value); }
         /// <summary>
         /// 菜单类型
         /// </summary>
@@ -51,7 +51,7 @@ namespace tesla_wpf.Model {
             MenuType = MenuType.Category;
         }
 
-        public MenuItem(string name, IMenuView content, PackIconKind icon = PackIconKind.Mixcloud) {
+        public MenuItem(string name, IMenu content, PackIconKind icon = PackIconKind.Mixcloud) {
             Name = name;
             Content = content;
             MenuType = MenuType.View;
@@ -103,78 +103,43 @@ namespace tesla_wpf.Model {
     /// <summary>
     /// 所有菜单的路由视图都得实现这个接口
     /// </summary>
-    public interface IMenuView {
-        /// <summary>
-        /// 延迟初始化，只有该路由被激活了才调用
-        /// </summary>
-        void LazyInitialize();
+    public interface IMenu {
+
     }
 
     /// <summary>
-    /// TreeView 只能打补丁实现 SelectedItem，所以要包装一下
-    /// <date>2019-1-22</date>
+    /// 初始化生命周期
     /// </summary>
-    public class MenuItemTreeWrapper : TreeViewItem, INotifyPropertyChanged {
-        public string Test { get; set; } = "Test";
-        public MenuItemTreeWrapper(string name, IMenuView content, PackIconKind icon = PackIconKind.Mixcloud) {
-            MenuItem = new MenuItem(name, content, icon);
-        }
-        public MenuItemTreeWrapper(string name, PackIconKind icon = PackIconKind.Mixcloud) {
-            MenuItem = new MenuItem(name, icon);
-        }
+    public interface IMenuInit : IMenu {
+        /// <summary>
+        /// 绑定 Context
+        /// </summary>
+        /// <returns></returns>
+        void OnInit(object param = null);
 
-        private MenuItem menuItem;
-        public MenuItem MenuItem {
-            get => menuItem;
-            set {
-                if (menuItem != value) {
-                    menuItem = value;
-                    onPropertyChanged();
-                }
-            }
-        }
-
-
-
-
-        private ObservableCollection<MenuItemTreeWrapper> subMenus;
-        public ObservableCollection<MenuItemTreeWrapper> SubMenus {
-            get => subMenus;
-            set {
-                if (subMenus != value) {
-                    subMenus = value;
-                    onPropertyChanged();
-                }
-            }
-        }
-
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void onPropertyChanged([CallerMemberName] string propertyName = null) {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-
-
-
-        public static (MenuItemTreeWrapper, MenuItemTreeWrapper) GetMenu(IList<MenuItemTreeWrapper> menus, int id, MenuItemTreeWrapper superMenu) {
-            if (menus == null) {
-                return (null, null);
-            }
-            foreach (var menu in menus) {
-                if (menu.MenuItem.Id == id) {
-                    return (menu, superMenu);
-                }
-                var (findMenu, findSuperMenu) = GetMenu(menu.SubMenus?.ToArray(), id, menu);
-                if (findMenu != null) {
-                    return (findMenu, findSuperMenu);
-                }
-            }
-            return (null, null);
-        }
     }
 
+    /// <summary>
+    /// 菜单被关闭，生命周期结束
+    /// </summary>
+    public interface IMenuDestroy : IMenu {
+        /// <summary>
+        /// 销毁 Contextx
+        /// </summary>
+        void OnDestroy(object param = null);
+    }
 
+    /// <summary>
+    /// Tab 页面被激活
+    /// </summary>
+    public interface IMenuActive : IMenu {
+        void OnActive(object param = null);
+    }
 
+    /// <summary>
+    /// Tab 页面从激活到失效
+    /// </summary>
+    public interface IMenuInActive : IMenu {
+        void OnInActive(object param = null);
+    }
 }

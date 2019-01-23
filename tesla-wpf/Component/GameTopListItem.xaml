@@ -19,11 +19,7 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <Image Height="140" Width="196" Stretch="UniformToFill" Source="/tesla-wpf;component/Assets/mountains.jpg" x:Name="CoverImage"/>
-                <Button Grid.Row="0" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"
-                      HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0 0 16 -20" Click="Button_Click">
-                    <materialDesign:PackIcon Kind="Bike" />
-                </Button>
+                <Image Height="140" Width="196" Stretch="UniformToFill"  x:Name="CoverImage"/>
                 <StackPanel Grid.Row="1" Margin="8 24 8 0" Height="85">
                     <TextBlock FontWeight="Bold" x:Name="TitleTextBlock"> Cycling</TextBlock>
                     <TextBlock TextWrapping="Wrap" x:Name="DescriptionTextBlock" VerticalAlignment="Top" HorizontalAlignment="Left">

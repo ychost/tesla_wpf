@@ -19,6 +19,10 @@ namespace tesla_wpf.Helper {
         /// </summary>
         public static ImageSource UserImaggeSource = new BitmapImage(GetAssets("user.ico"));
 
+        /// <summary>
+        /// 默认的 not found oops!
+        /// </summary>
+        public static ImageSource OopsImageSource = new BitmapImage(GetAssets("oops.png"));
 
         /// <summary>
         /// 获取 Assets 文件夹下面的资源
