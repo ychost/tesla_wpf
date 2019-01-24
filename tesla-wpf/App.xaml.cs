@@ -18,5 +18,10 @@ namespace tesla_wpf {
             base.OnStartup(e);
             SqliteHelper.Init(Path.GetFullPath("./tesla.db"));
         }
+
+        /// <summary>
+        /// 测试的 Token
+        /// </summary>
+        public static readonly string TestToken = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhcHAiOiJ0ZXNsYSIsImV4cGlyZSI6IjIxMTgtMTItMDYgMjM6MzI6NTUiLCJleHAiOjQ2OTk3ODM5NzUsImdlbmVyYXRlVGltZSI6IjIwMTgtMTItMDYgMjM6MzI6NTUiLCJ1c2VyIjoieWNob3N0In0.dAZF0ZbjxrHrH1kTLBuyx9aiyve1f3B3tShurzkkAHY";
     }
 }

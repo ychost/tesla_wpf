@@ -43,14 +43,38 @@ namespace tesla_wpf.Model {
         /// </summary>
         public PackIconKind Icon { get => GetProperty<PackIconKind>(); set => SetProperty(value); }
 
+
         /// <summary>
-        /// 
+        /// String 类型的 Icon
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="icon"></param>
+        public MenuItem(string name, IMenu content, string icon) : this(name, content, parseIcon(icon)) {
+        }
+
+        /// <summary>
+        /// String 类型的 Icon，父菜单
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="icon"></param>
+        public MenuItem(string name, string icon) : this(name, null, icon) {
+
+        }
+
+        /// <summary>
+        ///  普通 Icon 父菜单
         /// </summary>
         /// <param name="name"></param>
         public MenuItem(string name, PackIconKind icon = PackIconKind.Mixcloud) : this(name, null, icon) {
             MenuType = MenuType.Category;
         }
 
+        /// <summary>
+        /// 普通类型 Icon 子菜单
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="content"></param>
+        /// <param name="icon"></param>
         public MenuItem(string name, IMenu content, PackIconKind icon = PackIconKind.Mixcloud) {
             Name = name;
             Content = content;
@@ -84,6 +108,14 @@ namespace tesla_wpf.Model {
                 }
             }
             return (null, null);
+        }
+
+
+        private static PackIconKind parseIcon(string icon) {
+            if (Enum.TryParse<PackIconKind>(icon, out var packIcon)) {
+                return packIcon;
+            }
+            return PackIconKind.Mixcloud;
         }
     }
 

@@ -58,7 +58,7 @@
                     </Grid>
                     <TreeView
                         Grid.Row="0"
-                        Margin="-7,0,0,0"
+                        Margin="0,0,0,0"
                         x:Name="MenuTree"
                         ItemsSource="{Binding MenuItems}"
                         MinWidth="220"

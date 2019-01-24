@@ -10,9 +10,12 @@ using System.Windows;
 using System.Windows.Input;
 using Dragablz;
 using MaterialDesignThemes.Wpf;
+using RestSharp;
 using tesla_wpf.Extensions;
 using tesla_wpf.Model;
+using tesla_wpf.Rest;
 using tesla_wpf.Route.View;
+using tesla_wpf.Toolkit;
 using Vera.Wpf.Lib.Helper;
 using Vera.Wpf.Lib.Mvvm;
 
@@ -57,15 +60,15 @@ namespace tesla_wpf.Route.ViewModel {
             }
         }
 
-        private void setSelectedMenu(MenuItem value) {
+        private async void setSelectedMenu(MenuItem value) {
             if (!(value.Content is System.Windows.Controls.UserControl view)) {
                 return;
             }
             // 通过 Tag 来标记，进行延迟初始化
             if (view.Tag == null || (bool)view.Tag == false) {
                 view.Tag = true;
-                //ViewHelper.ExecWithLoadingDialog(value.Content.Initialize);
-                value.Content.Initialize();
+                await ViewHelper.ExecWithLoadingDialog(value.Content.Initialize);
+                //Content.Initialize();
             }
             if (!SetProperty(value, nameof(SelectedMenu))) {
                 return;
@@ -119,19 +122,49 @@ namespace tesla_wpf.Route.ViewModel {
         /// 初始化
         /// </summary>
         protected override void InitRuntimeData() {
-            MenuItems = new ObservableCollection<MenuItem> {
-                new MenuItem("主页",new HomeView(),PackIconKind.Home),
-                new MenuItem("测试页",new HomeView(),PackIconKind.Home),
-                new MenuItem("游戏",PackIconKind.Gamepad) {
-                    SubMenus = new ObservableCollection<MenuItem>() {
-                        new MenuItem("游戏排行",new GameTopList(),PackIconKind.GamepadVariant)
-                    }
-                }
-            };
+            //todo 服务器请求
+            MenuItems = convertToMenus(null);
             TabItems.Add(MenuItems[0].ToTabItem());
-            SelectedMenu = MenuItems[0];
             // 处理用户删除了某个 Tab
             TabItems.CollectionChanged += disptachTabEvent;
+        }
+
+
+        RsUserSettings fetchUserSettings() {
+            var client = new RestClient("http://test.sudoyc.com:1002");
+            client.UseSerializer(new RestJsonSerializer());
+            var request = new RestRequest(RestApi.FetchUserSettings);
+            request.AddHeader("Authorization", TokenToolkit.GetToken());
+            var response = client.Get<Rest<RsUserSettings>>(request);
+
+            return response.Data.Data;
+        }
+
+        /// <summary>
+        /// 从服务器拉取的菜单数据转换成普通的菜单数据
+        /// </summary>
+        /// <param name="rsMenus"></param>
+        /// <returns></returns>
+        ObservableCollection<MenuItem> convertToMenus(List<RsMenu> rsMenus) {
+            var menuItems = new ObservableCollection<MenuItem>();
+            foreach (var rm in rsMenus) {
+                // 子菜单
+                if (rm.Children == null || rm.Children.Count == 0) {
+                    if (RouteConfig.MenuConfig.TryGetValue(rm.Link, out var type)) {
+                        var view = (IMenu)Activator.CreateInstance(type);
+                        var item = new MenuItem(rm.Text, view, rm.Icon);
+                        menuItems.Add(item);
+                    } else {
+                        throw new Exception($"菜单 $[{rm.Text}] 不存在");
+                    }
+                    // 父菜单
+                } else {
+                    menuItems.Add(new MenuItem(rm.Text, rm.Icon) {
+                        SubMenus = convertToMenus(rm.Children)
+                    });
+                }
+            }
+            return menuItems;
         }
 
 
