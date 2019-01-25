@@ -38,13 +38,18 @@
                                Width="{Binding ActualWidth,ElementName=MenuStackPanel}" 
                                Stretch="Fill" Source="/tesla-wpf;component/Assets/mountains.jpg"/>
 
-                        <Button Width="60" Height="60"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        Background="{x:Null}"
-                        BorderBrush="{x:Null}"
-                        Command="{Binding CloseMenuCmd}"
-                                >
+                        <Grid Width="60" Height="60" VerticalAlignment="Top" Margin="0,2,0,0">
+                            <Ellipse Fill="{DynamicResource PrimaryHueDarkBrush}" Opacity="0.9" />
+                            <Ellipse >
+                                <Ellipse.Fill>
+                                    <ImageBrush  Stretch="Uniform" ImageSource="{Binding User.AvatarImageSource}" />
+                                </Ellipse.Fill>
+                            </Ellipse>
+                        </Grid>
+
+                        <Button Width="60" Height="60" HorizontalAlignment="Right"
+                            VerticalAlignment="Top" Background="{x:Null}"
+                            BorderBrush="{x:Null}" Command="{Binding CloseMenuCmd}" >
                         </Button>
                         <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
                             HorizontalAlignment="Right"
@@ -89,6 +94,8 @@
                             <StackPanel>
                                 <Button Content="最大化" Click="MaxWindow" />
                                 <Button Content="最小化" Click="MinWindow" />
+                                <Separator/>
+                                <Button Content="注销" Click="ExitLogin"/>
                                 <Button Content="退出" Click="CloseWindow" />
                             </StackPanel>
                         </materialDesign:PopupBox>

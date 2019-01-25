@@ -14,22 +14,22 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using MaterialDesignThemes.Wpf;
+using tesla_wpf.Model.Setting;
 using tesla_wpf.Route.ViewModel;
 using Vera.Wpf.Lib.Component;
+using Vera.Wpf.Lib.Helper;
 
 namespace tesla_wpf.Route.View {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
     public partial class MainWindow : Window {
-        public MainWindow() : this("default token") {
-
-        }
-        public MainWindow(string token) {
-            var vm = new MainWindowViewModel(token);
+        public MainWindow() {
+            var vm = new MainWindowViewModel();
             DataContext = vm;
             InitializeComponent();
         }
+
 
         private void MaxWindow_DoubleClick(object sender, MouseButtonEventArgs e) {
             if (WindowState == WindowState.Maximized) {
@@ -70,5 +70,21 @@ namespace tesla_wpf.Route.View {
             MenuToggleButton.IsChecked = false;
         }
 
+        /// <summary>
+        /// 退出登录
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ExitLogin(object sender, RoutedEventArgs e) {
+            var loginWindow = new LoginWindow(null);
+            Application.Current.MainWindow = loginWindow;
+            NotifyHelper.UpdateNotifierWindow();
+            // 删除用户记录
+            SqliteHelper.Exec(db => {
+                db.Execute($"delete from {nameof(User)} where Name='{App.User.Name}'");
+            });
+            Close();
+            loginWindow.Show();
+        }
     }
 }

@@ -4,8 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         x:Name="Window"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:tesla_wpf"
+        xmlns:toolkit="clr-namespace:Vera.Wpf.Lib.Mvvm;assembly=Vera.Wpf.Lib"
         Title="Login"
         Height="500" 
         Width="350" 
@@ -20,39 +22,106 @@
         AllowsTransparency="True"
         Background="Transparent"
         mc:Ignorable="d"
+        d:DataContext="{Binding Source={StaticResource ViewModel}}"
         >
-        <Grid >
+    <Window.Resources>
+        <local:LoginWindow  x:Key="ViewModel"/>
+        <Style TargetType="{x:Type Button}" x:Key="EventButton">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border BorderBrush="Purple">
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Opacity" Value="0.5"/>
+                                            <Setter Property="Background" Value="#FF2281D1"/>
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="False">
+                                            <Setter Property="BorderThickness" Value="0"/>
+                                            <Setter Property="Background" Value="Transparent"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <Grid Background="Transparent">
+                                <ContentPresenter/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+    </Window.Resources>
+    <Grid >
         <Rectangle Width="350" Height="500" x:Name="BackgroundRect" Fill="{DynamicResource MaterialDesignPaper}" RadiusX="5" RadiusY="5"/>
         <Rectangle Height="280" RadiusX="{Binding RadiusX,ElementName=BackgroundRect}"  RadiusY="{Binding RadiusY,ElementName=BackgroundRect}"  VerticalAlignment="Top" MouseLeftButtonDown="Window_Move">
-                <Rectangle.Fill>
-                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="#FF2281D1"/>
-                        <GradientStop Color="#FF34268A" Offset="1"/>
-                        <GradientStop Color="#FF33288B" Offset="0.546"/>
-                    </LinearGradientBrush>
-                </Rectangle.Fill>
-            </Rectangle>
+            <Rectangle.Fill>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF2281D1"/>
+                    <GradientStop Color="#FF34268A" Offset="1"/>
+                    <GradientStop Color="#FF33288B" Offset="0.546"/>
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
 
-            <Rectangle Width="280" Height="240" VerticalAlignment="Bottom" Margin="0,80" RadiusY="10" RadiusX="10" Fill="White">
-                <Rectangle.Effect>
-                    <DropShadowEffect BlurRadius="15" Direction="0" RenderingBias="Quality" ShadowDepth="1" Color="#FFBBBBBB"/>
-                </Rectangle.Effect>
-            </Rectangle>
-            <Grid VerticalAlignment="Bottom" Margin="35,80" Height="240">
-                <Label Content="登录" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5" Foreground="Gray" FontSize="18"/>
-                <StackPanel VerticalAlignment="Center" Margin="15">
-                    <TextBox Margin="0,10" materialDesign:HintAssist.Hint="手机号" Style="{StaticResource MaterialDesignFloatingHintTextBox}"  FontSize="18"/>
-                    <PasswordBox Margin="0,10" materialDesign:HintAssist.Hint="密码" Style="{StaticResource MaterialDesignFloatingHintPasswordBox}"  FontSize="18"/>
-                </StackPanel>
-            </Grid>
-            <Button Width="150" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,65" Content="登录" Click="LoginButton_Click"/>
-            <TextBlock Text="忘记密码?" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="30" Foreground="Gray" Cursor="Hand"/>
-            <!--<Image Source="Assets/home.png" Width="100" Height="100" VerticalAlignment="Top" Margin="30"/>-->
-            <Button Width="100" Height="100" Margin="30" VerticalAlignment="Top"
-                  Style="{StaticResource MaterialDesignFloatingActionButton}"
-                >
-                <materialDesign:PackIcon Kind="Alpha" Width="80" Height="80"
-                                     HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            </Button>
+        <Rectangle Width="280" Height="240" VerticalAlignment="Bottom" Margin="0,80" RadiusY="10" RadiusX="10" Fill="White">
+            <Rectangle.Effect>
+                <DropShadowEffect BlurRadius="15" Direction="0" RenderingBias="Quality" ShadowDepth="1" Color="#FFBBBBBB"/>
+            </Rectangle.Effect>
+        </Rectangle>
+        <Grid VerticalAlignment="Bottom" Margin="35,80" Height="240">
+            <Label Content="登录" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5" Foreground="Gray" FontSize="18"/>
+            <StackPanel VerticalAlignment="Center" Margin="15">
+                <TextBox Margin="0,10" TextChanged="UserName_TextChanged" materialDesign:HintAssist.Hint="用户名" Style="{StaticResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.IsFloating="True"  FontSize="16"
+                    Text="{Binding Path=UserLogin.UserName,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}"
+                         />
+                <PasswordBox x:Name="PasswordBox"  Margin="0,10" materialDesign:HintAssist.Hint="密码" Style="{StaticResource MaterialDesignFloatingHintPasswordBox}" materialDesign:HintAssist.IsFloating="True"  FontSize="16" />
+
+
+            </StackPanel>
         </Grid>
+        <Button Command="{Binding LoginCmd}"
+                Width="150" HorizontalAlignment="Center" 
+                VerticalAlignment="Bottom" Margin="0,65" 
+                Cursor="Hand"
+                Content="登录" />
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="注册账户" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="30" Foreground="Gray" Cursor="Hand"/>
+            <TextBlock Text="忘记密码？" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="30" Foreground="Gray" Cursor="Hand"/>
+        </Grid>
+        <Ellipse Width="100" Height="100" Margin="30" VerticalAlignment="Top">
+            <Ellipse.Fill>
+                <ImageBrush  x:Name="Avatar" ImageSource="Assets/user.ico"/>
+            </Ellipse.Fill>
+        </Ellipse>
+        <!--最小化-->
+        <Rectangle VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Height="25" Margin="0,0,33,0">
+            <Rectangle.Fill>
+                <ImageBrush ImageSource="Assets/minimize.png"  />
+            </Rectangle.Fill>
+        </Rectangle>
+        <Button Margin="0,0,33,0" Style="{StaticResource EventButton}" ToolTip="最小化" Click="Minimize_Click" />
+        <!--关闭-->
+        <Rectangle VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Height="25">
+            <Rectangle.Fill>
+                <ImageBrush ImageSource="Assets/close.png"  />
+            </Rectangle.Fill>
+        </Rectangle>
+        <Button Style="{StaticResource EventButton}"  ToolTip="关闭" Click="Close_Click"/>
+
+
+    </Grid>
 </Window>

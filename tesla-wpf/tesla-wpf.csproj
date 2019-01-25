@@ -133,6 +133,7 @@
     <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
     </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Memory, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.0\lib\netstandard2.0\System.Memory.dll</HintPath>
@@ -182,17 +183,21 @@
     <Compile Include="Component\GameTopListItem.xaml.cs">
       <DependentUpon>GameTopListItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Extensions\MenuExtensions.cs" />
     <Compile Include="Extensions\NotifyExtensions.cs" />
+    <Compile Include="Extensions\HttpRestService.cs" />
     <Compile Include="Extensions\VisualTreeHelperExtensions.cs" />
     <Compile Include="Helper\AssetsHelper.cs" />
     <Compile Include="Model\GameTop\Game.cs" />
     <Compile Include="Model\MenuItem.cs" />
+    <Compile Include="Model\Setting\LoginHistory.cs" />
     <Compile Include="Model\Setting\User.cs" />
     <Compile Include="Model\TabItem.cs" />
     <Compile Include="Rest\Rest.cs" />
-    <Compile Include="Rest\RestApi.cs" />
+    <Compile Include="Rest\RsSystemApi.cs" />
     <Compile Include="Rest\RestJsonSerializer.cs" />
+    <Compile Include="Rest\RsUserLogin.cs" />
     <Compile Include="Rest\RsUserSettings.cs" />
     <Compile Include="Route\RouteConfig.cs" />
     <Compile Include="Route\ViewModel\GameTopListViewModel.cs" />
@@ -211,7 +216,7 @@
     <Compile Include="Route\View\TypingGame.xaml.cs">
       <DependentUpon>TypingGame.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Toolkit\TokenToolkit.cs" />
+    <Compile Include="Toolkit\ConvertToolkit.cs" />
     <Page Include="Component\AvatarList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -280,7 +285,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Assets\close.png" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\home.png" />
   </ItemGroup>
@@ -298,6 +305,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\oops.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\minimize.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.linux.1.1.11\build\net35\SQLitePCLRaw.lib.e_sqlite3.linux.targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.linux.1.1.11\build\net35\SQLitePCLRaw.lib.e_sqlite3.linux.targets')" />

@@ -24,7 +24,7 @@ namespace tesla_wpf.Model {
         /// <summary>
         /// 每个 Menu 特有的标识
         /// </summary>
-        public int Id { get; }
+        public int Id { get; set; }
         /// <summary>
         /// 菜单名
         /// </summary>
@@ -80,7 +80,7 @@ namespace tesla_wpf.Model {
             Content = content;
             MenuType = MenuType.View;
             Icon = icon;
-            Id = MenuCount++;
+            //Id = MenuCount++;
         }
 
         /// <summary>

@@ -1,8 +1,12 @@
 ﻿
 
 using System.Collections.Generic;
+using SQLite;
 
 namespace tesla_wpf.Rest {
+    /// <summary>
+    /// 这个要存入数据 Token 啥的有用
+    /// </summary>
     public class RsUser {
         public string NickName { get; set; }
         public string Name { get; set; }
@@ -48,7 +52,7 @@ namespace tesla_wpf.Rest {
     }
     public class RsUserSettings {
         public RsUser User { get; set; }
-        public App App { get; set; }
-        public List<RsMenu> menus { get; set; }
+        public RsApp App { get; set; }
+        public List<RsMenu> Menus { get; set; }
     }
 }

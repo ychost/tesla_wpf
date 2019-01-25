@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
+using tesla_wpf.Model.Setting;
 using Vera.Wpf.Lib.Helper;
 
 namespace tesla_wpf {
@@ -19,9 +20,30 @@ namespace tesla_wpf {
             SqliteHelper.Init(Path.GetFullPath("./tesla.db"));
         }
 
-        /// <summary>
-        /// 测试的 Token
         /// </summary>
-        public static readonly string TestToken = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhcHAiOiJ0ZXNsYSIsImV4cGlyZSI6IjIxMTgtMTItMDYgMjM6MzI6NTUiLCJleHAiOjQ2OTk3ODM5NzUsImdlbmVyYXRlVGltZSI6IjIwMTgtMTItMDYgMjM6MzI6NTUiLCJ1c2VyIjoieWNob3N0In0.dAZF0ZbjxrHrH1kTLBuyx9aiyve1f3B3tShurzkkAHY";
+        /// <summary>
+        /// 登录的用户信息
+        /// </summary>
+        private static User user;
+        public static User User {
+            get {
+                if (user == null) {
+                    throw new Exception("用户数据为空");
+                }
+                return user;
+            }
+            set {
+                user = value;
+            }
+        }
+
+
+        /// <summary>
+        /// 获取 http 请求的必备 Token
+        /// </summary>
+        /// <returns></returns>
+        public static string GetHttpToken() {
+            return User.Token;
+        }
     }
 }

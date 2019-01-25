@@ -13,9 +13,11 @@ using MaterialDesignThemes.Wpf;
 using RestSharp;
 using tesla_wpf.Extensions;
 using tesla_wpf.Model;
+using tesla_wpf.Model.Setting;
 using tesla_wpf.Rest;
 using tesla_wpf.Route.View;
 using tesla_wpf.Toolkit;
+using Vera.Wpf.Lib.Component;
 using Vera.Wpf.Lib.Helper;
 using Vera.Wpf.Lib.Mvvm;
 
@@ -28,7 +30,10 @@ namespace tesla_wpf.Route.ViewModel {
         /// Tab 列表
         /// </summary>
         public ObservableCollection<TabItem> TabItems { get; set; } = new ObservableCollection<TabItem>();
-
+        /// <summary>
+        /// 用户信息
+        /// </summary>
+        public User User { get => GetProperty<User>(); set => SetProperty(value); }
         /// <summary>
         /// 菜单是否处于打开状态
         /// </summary>
@@ -106,65 +111,69 @@ namespace tesla_wpf.Route.ViewModel {
         }
 
         public string Token { get; }
-        /// <summary>
-        /// 注入 Token
-        /// </summary>
-        /// <param name="token"></param>
-        public MainWindowViewModel(string token) {
-            Token = token;
-        }
 
-        public MainWindowViewModel() {
-
-        }
 
         /// <summary>
         /// 初始化
         /// </summary>
         protected override void InitRuntimeData() {
-            //todo 服务器请求
-            MenuItems = convertToMenus(null);
-            TabItems.Add(MenuItems[0].ToTabItem());
-            // 处理用户删除了某个 Tab
-            TabItems.CollectionChanged += disptachTabEvent;
+            handleUserSettings();
         }
 
-
-        RsUserSettings fetchUserSettings() {
-            var client = new RestClient("http://test.sudoyc.com:1002");
-            client.UseSerializer(new RestJsonSerializer());
-            var request = new RestRequest(RestApi.FetchUserSettings);
-            request.AddHeader("Authorization", TokenToolkit.GetToken());
-            var response = client.Get<Rest<RsUserSettings>>(request);
-
-            return response.Data.Data;
-        }
 
         /// <summary>
-        /// 从服务器拉取的菜单数据转换成普通的菜单数据
+        /// 
         /// </summary>
-        /// <param name="rsMenus"></param>
         /// <returns></returns>
-        ObservableCollection<MenuItem> convertToMenus(List<RsMenu> rsMenus) {
-            var menuItems = new ObservableCollection<MenuItem>();
-            foreach (var rm in rsMenus) {
-                // 子菜单
-                if (rm.Children == null || rm.Children.Count == 0) {
-                    if (RouteConfig.MenuConfig.TryGetValue(rm.Link, out var type)) {
-                        var view = (IMenu)Activator.CreateInstance(type);
-                        var item = new MenuItem(rm.Text, view, rm.Icon);
-                        menuItems.Add(item);
+        async void handleUserSettings() {
+            var rest = await HttpRestService.ForAuthApi<RsSystemApi>().FetchUserSettings();
+            try {
+                if (HttpRestService.ForData(rest, out var settings)) {
+                    var isFirstLogin = User == null;
+                    User = ConvertToolkit.ConvertUser(settings.User);
+                    var history = new LoginHistory() {
+                        Name = User.Name,
+                        Avatar = User.Avatar
+                    };
+                    if (isFirstLogin) {
+                        User.CreateComplete();
                     } else {
-                        throw new Exception($"菜单 $[{rm.Text}] 不存在");
+                        User.UpdateComplete();
                     }
-                    // 父菜单
-                } else {
-                    menuItems.Add(new MenuItem(rm.Text, rm.Icon) {
-                        SubMenus = convertToMenus(rm.Children)
+                    // 更新用户数据
+                    SqliteHelper.Exec(db => {
+                        var oldUser = db.Query<User>($"Select * From {nameof(User)} where Name='{User.Name}'").FirstOrDefault();
+                        var oldHistory = db.Query<LoginHistory>($"Select * From {nameof(LoginHistory)} where Name='{history.Name}'").FirstOrDefault();
+                        //fixme: 用 InserOrReplace 会导致 Token 无法写入
+                        //可能是 Sqlite-net 的 Bug
+                        if (oldUser != null) {
+                            db.Delete(oldUser);
+                        }
+                        if (oldHistory != null) {
+                            db.Delete(oldHistory);
+                        }
+                        db.Insert(User);
+                        db.Insert(history);
                     });
+                    // 更新用户数据
+                    App.User = User;
+                    // 渲染菜单项
+                    MenuItems = ConvertToolkit.ConvertMenus(settings.Menus);
+                    Application.Current.Dispatcher.Invoke(() => {
+                        TabItems.CollectionChanged += disptachTabEvent;
+                        //TabItems.Add(MenuItems[0].ToTabItem());
+                        SelectedTab = MenuItems[0].ToTabItem();
+                        TabItems.Add(SelectedTab);
+                    });
+                } else {
+                    await Application.Current.Dispatcher.Invoke(async () => {
+                        await DialogHost.Show(new ConfirmDialog(rest.Message));
+                    });
+                    App.Current.MainWindow.Close();
                 }
+            } catch (Exception e) {
+                NotifyHelper.ShowErrorMessage("系统错误" + e.Message);
             }
-            return menuItems;
         }
 
 

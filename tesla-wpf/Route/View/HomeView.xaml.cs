@@ -18,6 +18,22 @@ namespace tesla_wpf.Route.View {
     /// <summary>
     /// HomeView.xaml 的交互逻辑
     /// </summary>
-    public partial class HomeView : UserControl, IMenu {
+    public partial class HomeView : UserControl, IMenu, IMenuInit, IMenuActive, IMenuInActive, IMenuDestroy {
+        public void OnActive(object param = null) {
+            Console.WriteLine("_Active");
+        }
+
+        public void OnDestroy(object param = null) {
+            Console.WriteLine("_Destroy");
+        }
+
+        public void OnInActive(object param = null) {
+            Console.WriteLine("_InActive");
+        }
+
+        public void OnInit(object param = null) {
+            InitializeComponent();
+            Console.WriteLine("_Init");
+        }
     }
 }
