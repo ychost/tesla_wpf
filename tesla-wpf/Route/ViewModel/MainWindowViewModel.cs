@@ -153,6 +153,7 @@ namespace tesla_wpf.Route.ViewModel {
                             db.Delete(oldHistory);
                         }
                         db.Insert(User);
+                        history.CreateTime = oldHistory.CreateTime;
                         db.Insert(history);
                     });
                     // 更新用户数据
@@ -169,7 +170,7 @@ namespace tesla_wpf.Route.ViewModel {
                     await Application.Current.Dispatcher.Invoke(async () => {
                         await DialogHost.Show(new ConfirmDialog(rest.Message));
                     });
-                    App.Current.MainWindow.Close();
+                    Application.Current.MainWindow.Close();
                 }
             } catch (Exception e) {
                 NotifyHelper.ShowErrorMessage("系统错误" + e.Message);

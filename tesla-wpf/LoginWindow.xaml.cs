@@ -35,7 +35,7 @@ namespace tesla_wpf {
             InitializeComponent();
             DataContext = this;
             SqliteHelper.Exec(db => {
-                loginHistories = db.Query<LoginHistory>($"Select * From {nameof(User)}");
+                loginHistories = db.Query<LoginHistory>($"Select * From {nameof(LoginHistory)}");
             });
             autoLogin();
         }
@@ -48,7 +48,7 @@ namespace tesla_wpf {
             InitializeComponent();
             DataContext = this;
             SqliteHelper.Exec(db => {
-                loginHistories = db.Query<LoginHistory>($"Select * From {nameof(User)}");
+                loginHistories = db.Query<LoginHistory>($"Select * From {nameof(LoginHistory)}");
             });
         }
 
@@ -67,7 +67,9 @@ namespace tesla_wpf {
                         gotoMainWindow();
                     }
                 } catch {
-                    NotifyHelper.ShowWarnMessage("用户身份已失效，请重新登录");
+                    await Dispatcher.BeginInvoke(new Action(() => {
+                        NotifyHelper.ShowWarnMessage("用户身份已失效，请重新登录");
+                    }));
                     SqliteHelper.Exec(db => {
                         db.Delete(user);
                     });
@@ -77,6 +79,20 @@ namespace tesla_wpf {
 
         public RsUserLogin UserLogin { get; set; } = new RsUserLogin();
         public ICommand LoginCmd => new MdCommand(loginExec, canLogin);
+        /// <summary>
+        /// 正在登录中
+        /// </summary>
+        private bool isLogining;
+        public bool IsLogining {
+            get => isLogining;
+            set {
+                if (isLogining != value) {
+                    isLogining = value;
+                    onPropertyChanged(nameof(IsLogining));
+                }
+            }
+        }
+
 
         /// <summary>
         /// 登录
@@ -90,6 +106,10 @@ namespace tesla_wpf {
                 NotifyHelper.ShowErrorMessage("密码不能为空");
                 return;
             }
+            IsLogining = true;
+            await Task.Delay(1000);
+
+
             var client = HttpRestService.ForAnonymousApi<RsSystemApi>();
             var rest = await client.Login(UserLogin);
             if (HttpRestService.ForData(rest, out var msg)) {
@@ -98,6 +118,7 @@ namespace tesla_wpf {
                 App.User = user;
                 gotoMainWindow();
             }
+            IsLogining = false;
         }
 
         private bool canLogin(object arg) {
@@ -160,7 +181,7 @@ namespace tesla_wpf {
             if (user != null) {
                 Avatar.ImageSource = user.AvatarImageSource;
             } else {
-                Avatar.ImageSource = new BitmapImage(AssetsHelper.GetAssets("user.ico"));
+                Avatar.ImageSource = new BitmapImage(AssetsHelper.GetAssets("user.png"));
             }
         }
     }

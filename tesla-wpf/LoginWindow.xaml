@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:con="http://schemas.kent.boogaart.com/converters"
         x:Name="Window"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -85,15 +86,20 @@
                     Text="{Binding Path=UserLogin.UserName,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}"
                          />
                 <PasswordBox x:Name="PasswordBox"  Margin="0,10" materialDesign:HintAssist.Hint="密码" Style="{StaticResource MaterialDesignFloatingHintPasswordBox}" materialDesign:HintAssist.IsFloating="True"  FontSize="16" />
-
-
             </StackPanel>
         </Grid>
-        <Button Command="{Binding LoginCmd}"
-                Width="150" HorizontalAlignment="Center" 
-                VerticalAlignment="Bottom" Margin="0,65" 
+        <Grid Width="150" HorizontalAlignment="Center" Margin="0,65"  VerticalAlignment="Bottom" >
+            <Button Command="{Binding LoginCmd}"
+            IsEnabled="{Binding IsLogining,Converter={con:ExpressionConverter Expression= {}!{0}}}"
                 Cursor="Hand"
                 Content="登录" />
+            <ProgressBar Style="{DynamicResource MaterialDesignCircularProgressBar}"
+                  Foreground="White"
+                  Visibility="{Binding IsLogining,Converter={con:BooleanToVisibilityConverter}}"
+                  IsIndeterminate="True" Width="30" 
+                  Height="30" Value="0" HorizontalAlignment="Right" />
+        </Grid>
+
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -104,7 +110,7 @@
         </Grid>
         <Ellipse Width="100" Height="100" Margin="30" VerticalAlignment="Top">
             <Ellipse.Fill>
-                <ImageBrush  x:Name="Avatar" ImageSource="Assets/user.ico"/>
+                <ImageBrush  x:Name="Avatar" ImageSource="Assets/user.png"/>
             </Ellipse.Fill>
         </Ellipse>
         <!--最小化-->

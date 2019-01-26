@@ -17,7 +17,7 @@ namespace tesla_wpf.Helper {
         /// <summary>
         /// 默认的用户头像
         /// </summary>
-        public static ImageSource UserImaggeSource = new BitmapImage(GetAssets("user.ico"));
+        public static ImageSource UserImaggeSource = new BitmapImage(GetAssets("user.png"));
 
         /// <summary>
         /// 默认的 not found oops!
