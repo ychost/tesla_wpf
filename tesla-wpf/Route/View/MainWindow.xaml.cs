@@ -81,7 +81,8 @@ namespace tesla_wpf.Route.View {
             NotifyHelper.UpdateNotifierWindow();
             // 删除用户记录
             SqliteHelper.Exec(db => {
-                db.Execute($"delete from {nameof(User)} where Name='{App.User.Name}'");
+                //db.Execute($"delete from {nameof(User)} where Name='{App.User.Name}'");
+                db.Delete(App.User);
             });
             Close();
             loginWindow.Show();

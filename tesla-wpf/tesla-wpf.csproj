@@ -189,6 +189,7 @@
     <Compile Include="Extensions\HttpRestService.cs" />
     <Compile Include="Extensions\VisualTreeHelperExtensions.cs" />
     <Compile Include="Helper\AssetsHelper.cs" />
+    <Compile Include="Helper\NetworkHelper.cs" />
     <Compile Include="Model\GameTop\Game.cs" />
     <Compile Include="Model\MenuItem.cs" />
     <Compile Include="Model\Setting\LoginHistory.cs" />

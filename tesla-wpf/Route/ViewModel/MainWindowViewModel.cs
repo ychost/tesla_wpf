@@ -12,6 +12,7 @@ using Dragablz;
 using MaterialDesignThemes.Wpf;
 using RestSharp;
 using tesla_wpf.Extensions;
+using tesla_wpf.Helper;
 using tesla_wpf.Model;
 using tesla_wpf.Model.Setting;
 using tesla_wpf.Rest;
@@ -117,6 +118,8 @@ namespace tesla_wpf.Route.ViewModel {
         /// 初始化
         /// </summary>
         protected override void InitRuntimeData() {
+            // 获取用户
+            User = App.User;
             handleUserSettings();
         }
 
@@ -129,17 +132,10 @@ namespace tesla_wpf.Route.ViewModel {
             var rest = await HttpRestService.ForAuthApi<RsSystemApi>().FetchUserSettings();
             try {
                 if (HttpRestService.ForData(rest, out var settings)) {
-                    var isFirstLogin = User == null;
-                    User = ConvertToolkit.ConvertUser(settings.User);
                     var history = new LoginHistory() {
                         Name = User.Name,
                         Avatar = User.Avatar
                     };
-                    if (isFirstLogin) {
-                        User.CreateComplete();
-                    } else {
-                        User.UpdateComplete();
-                    }
                     // 更新用户数据
                     SqliteHelper.Exec(db => {
                         var oldUser = db.Query<User>($"Select * From {nameof(User)} where Name='{User.Name}'").FirstOrDefault();
@@ -151,13 +147,12 @@ namespace tesla_wpf.Route.ViewModel {
                         }
                         if (oldHistory != null) {
                             db.Delete(oldHistory);
+                            history.CreateTime = oldHistory.CreateTime;
                         }
                         db.Insert(User);
-                        history.CreateTime = oldHistory.CreateTime;
+                        history.Avatar = AssetsHelper.DownloadAvatar(User.Avatar, User.Name);
                         db.Insert(history);
                     });
-                    // 更新用户数据
-                    App.User = User;
                     // 渲染菜单项
                     MenuItems = ConvertToolkit.ConvertMenus(settings.Menus);
                     Application.Current.Dispatcher.Invoke(() => {

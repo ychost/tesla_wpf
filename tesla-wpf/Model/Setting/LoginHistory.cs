@@ -29,9 +29,8 @@ namespace tesla_wpf.Model.Setting {
                 }
                 if (avatarImageSource == null) {
                     try {
-                        avatarImageSource = AssetsHelper.FetchImage(Avatar);
+                        avatarImageSource = AssetsHelper.LoadLocalAvatar(Avatar);
                     } catch (Exception e) {
-                        Console.WriteLine(e);
                         return AssetsHelper.UserImaggeSource;
                     }
                 }
