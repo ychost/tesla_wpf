@@ -23,6 +23,8 @@
         d:DataContext="{Binding Source={StaticResource ViewModel}}"
          xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:behaviours="clr-namespace:Vera.Wpf.Lib.Mvvm;assembly=Vera.Wpf.Lib"
+        xmlns:component="clr-namespace:Vera.Wpf.Lib.Component;assembly=Vera.Wpf.Lib"
+        xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
         AllowsTransparency="True"
         >
     <Window.Resources>
@@ -84,53 +86,62 @@
                     </TreeView>
                 </StackPanel>
             </materialDesign:DrawerHost.LeftDrawerContent>
+            <Grid>
+                <component:NotifyIcon MouseDoubleClick="NotifyIcon_DbClick"  Text="AistLab"  x:Name="NotifyIcon" Icon="/tesla-wpf;component/Assets/fly.ico">
+                    <component:NotifyIcon.MenuItems>
+                        <forms:MenuItem Text="设置" Click="MenuSetting_Click"/>
+                        <forms:MenuItem Text="退出" Click="MenuExit_Click"/>
+                    </component:NotifyIcon.MenuItems>
+                </component:NotifyIcon>
 
-            <DockPanel>
-                <materialDesign:ColorZone Padding="16" materialDesign:ShadowAssist.ShadowDepth="Depth5"
+
+                <DockPanel>
+                    <materialDesign:ColorZone Padding="16" materialDesign:ShadowAssist.ShadowDepth="Depth5"
                 MouseLeftButtonDown="DragWindow_LeftButton"
                 MouseDoubleClick="MaxWindow_DoubleClick" Mode="PrimaryDark" DockPanel.Dock="Top">
-                    <DockPanel>
-                        <materialDesign:PopupBox x:Name="popubox" DockPanel.Dock="Right" PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
-                            <StackPanel>
-                                <Button Content="最大化" Click="MaxWindow" />
-                                <Button Content="最小化" Click="MinWindow" />
-                                <Separator/>
-                                <Button Content="注销" Click="ExitLogin"/>
-                                <Button Content="退出" Click="CloseWindow" />
-                            </StackPanel>
-                        </materialDesign:PopupBox>
-                        <StackPanel Orientation="Horizontal">
-                            <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
+                        <DockPanel>
+                            <materialDesign:PopupBox x:Name="popubox" DockPanel.Dock="Right" PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
+                                <StackPanel>
+                                    <Button Content="最大化" Click="MaxWindow" />
+                                    <Button Content="最小化" Click="MinWindow" />
+                                    <Separator/>
+                                    <Button Content="注销" Click="ExitLogin"/>
+                                    <Button Content="退出" Click="CloseWindow" />
+                                </StackPanel>
+                            </materialDesign:PopupBox>
+                            <StackPanel Orientation="Horizontal">
+                                <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
                                           IsChecked="{Binding Path=MenuIsChecked}"
                                         x:Name="MenuToggleButton"/>
-                            <TextBlock VerticalAlignment="Center" Margin="16 0 0 0" Text="牛逼的后台管理" />
-                        </StackPanel>
-                    </DockPanel>
-                </materialDesign:ColorZone>
-                <dockablz:Layout>
-                    <dragablz:TabablzControl BorderThickness="0" 
+                                <TextBlock VerticalAlignment="Center" Margin="16 0 0 0" Text="牛逼的后台管理" />
+                            </StackPanel>
+                        </DockPanel>
+                    </materialDesign:ColorZone>
+                    <dockablz:Layout>
+                        <dragablz:TabablzControl BorderThickness="0" 
                                              Margin="0,-1,0,1" 
                                              FixedHeaderCount="1"
                                              ShowDefaultCloseButton="True"
                                              ItemsSource="{Binding TabItems}"
                                              SelectedValue="{Binding SelectedTab}"
                                              x:Name="TabControl">
-                        <dragablz:TabablzControl.InterTabController>
-                            <dragablz:InterTabController />
-                        </dragablz:TabablzControl.InterTabController>
-                        <dragablz:TabablzControl.HeaderItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Header}"/>
-                            </DataTemplate>
-                        </dragablz:TabablzControl.HeaderItemTemplate>
-                        <dragablz:TabablzControl.ContentTemplate>
-                            <DataTemplate>
-                                <ContentPresenter Content="{Binding Content}"/>
-                            </DataTemplate>
-                        </dragablz:TabablzControl.ContentTemplate>
-                    </dragablz:TabablzControl>
-                </dockablz:Layout>
-            </DockPanel>
+                            <dragablz:TabablzControl.InterTabController>
+                                <dragablz:InterTabController />
+                            </dragablz:TabablzControl.InterTabController>
+                            <dragablz:TabablzControl.HeaderItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Header}"/>
+                                </DataTemplate>
+                            </dragablz:TabablzControl.HeaderItemTemplate>
+                            <dragablz:TabablzControl.ContentTemplate>
+                                <DataTemplate>
+                                    <ContentPresenter Content="{Binding Content}"/>
+                                </DataTemplate>
+                            </dragablz:TabablzControl.ContentTemplate>
+                        </dragablz:TabablzControl>
+                    </dockablz:Layout>
+                </DockPanel>
+            </Grid>
         </materialDesign:DrawerHost>
     </materialDesign:DialogHost>
 

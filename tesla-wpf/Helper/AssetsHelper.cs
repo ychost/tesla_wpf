@@ -60,7 +60,16 @@ namespace tesla_wpf.Helper {
         /// <param name="name"></param>
         /// <returns></returns>
         public static ImageSource LoadLocalAvatar(string name) {
-            return LoadImage(new Uri(Path.Combine(Environment.CurrentDirectory, @".\avatars\" + name)));
+            var path = Path.Combine(Environment.CurrentDirectory, @".\avatars\" + name);
+            return LoadImage(new Uri(path));
+            //var bitmap = new BitmapImage();
+            //using (var stream = new FileStream(path, FileMode.Open)) {
+            //    bitmap.BeginInit();
+            //    bitmap.CacheOption = BitmapCacheOption.OnLoad;
+            //    bitmap.StreamSource = stream;
+            //    bitmap.EndInit();
+            //}
+            //return bitmap;
         }
 
         /// <summary>
@@ -76,6 +85,7 @@ namespace tesla_wpf.Helper {
             //这样就可以删除 UriSource 文件
             image.CacheOption = BitmapCacheOption.OnLoad;
             image.EndInit();
+            image.Freeze();
             return image;
         }
 

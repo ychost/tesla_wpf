@@ -28,6 +28,7 @@ namespace tesla_wpf.Route.View {
             var vm = new MainWindowViewModel();
             DataContext = vm;
             InitializeComponent();
+            ShowInTaskbar = false;
         }
 
 
@@ -86,6 +87,21 @@ namespace tesla_wpf.Route.View {
             });
             Close();
             loginWindow.Show();
+        }
+
+        private void MenuSetting_Click(object sender, EventArgs e) {
+
+        }
+
+        private void MenuExit_Click(object sender, EventArgs e) {
+            this.NotifyIcon.Close();
+            Close();
+        }
+
+        private void NotifyIcon_DbClick(object sender, MouseButtonEventArgs e) {
+            Topmost = false;
+            Topmost = true;
+            Topmost = false;
         }
     }
 }

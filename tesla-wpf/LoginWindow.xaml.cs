@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
@@ -12,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -93,6 +95,7 @@ namespace tesla_wpf {
             });
             // 网络初始化成功后自动登录
             initNetwork(autoLogin);
+            ShowInTaskbar = false;
         }
 
 
@@ -107,24 +110,28 @@ namespace tesla_wpf {
                 loginHistories = db.Query<LoginHistory>($"Select * From {nameof(LoginHistory)}");
             });
             initNetwork();
+            ShowInTaskbar = false;
         }
 
         /// <summary>
         /// 检查网络连接
         /// </summary>
         void initNetwork(Action action = null) {
-            checkNetworkTimer = TimeHelper.SetInterval(30000, () => {
-                if (NetworkHelper.CheckNetwork(out var message)) {
-                    NetworkIsOk = true;
-                    TimeHelper.ClearTimeout(checkNetworkTimer);
-                    networkRetryTimes = 0;
-                    NetworkMessage = string.Empty;
-                    action?.Invoke();
-                } else {
-                    networkRetryTimes += 1;
-                    NetworkMessage = $"正在尝试第 {networkRetryTimes} 次重连...";
-                }
-            }, true);
+            NetworkMessage = string.Empty;
+            NetworkIsOk = true;
+            action?.Invoke();
+            //checkNetworkTimer = TimeHelper.SetInterval(30000, () => {
+            //    if (NetworkHelper.CheckNetwork(out var message)) {
+            //        NetworkIsOk = true;
+            //        TimeHelper.ClearTimeout(checkNetworkTimer);
+            //        networkRetryTimes = 0;
+            //        NetworkMessage = string.Empty;
+            //        action?.Invoke();
+            //    } else {
+            //        networkRetryTimes += 1;
+            //        NetworkMessage = $"正在尝试第 {networkRetryTimes} 次重连...";
+            //    }
+            //}, true);
         }
 
         /// <summary>
@@ -168,12 +175,17 @@ namespace tesla_wpf {
                 return;
             }
             IsLogining = true;
-            await Task.Delay(1000);
             var client = HttpRestService.ForAnonymousApi<RsSystemApi>();
-            var rest = await client.Login(UserLogin);
-            if (HttpRestService.ForData(rest, out var msg)) {
-                var user = ConvertToolkit.ConvertUser(rest.Data);
-                gotoMainWindow(user);
+            try {
+                var rest = await client.Login(UserLogin);
+                if (HttpRestService.ForData(rest, out var msg)) {
+                    var user = ConvertToolkit.ConvertUser(rest.Data);
+                    gotoMainWindow(user);
+                }
+            } catch {
+                Application.Current.Dispatcher.Invoke(() => {
+                    NotifyHelper.ShowErrorMessage("网络错误");
+                });
             }
             IsLogining = false;
         }
@@ -192,11 +204,14 @@ namespace tesla_wpf {
         /// </summary>
         private void gotoMainWindow(User user) {
             App.User = user;
+            // 关闭网络检查器
+            // 这里不关后面可能还会运行，导致内存泄漏
+            checkNetworkTimer?.Close();
             var window = new MainWindow();
             Application.Current.MainWindow = window;
             NotifyHelper.UpdateNotifierWindow();
-            Close();
             window.Show();
+            exit();
         }
 
         /// <summary>
@@ -223,7 +238,7 @@ namespace tesla_wpf {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Close_Click(object sender, RoutedEventArgs e) {
-            Close();
+            exit();
         }
 
         /// <summary>
@@ -268,6 +283,44 @@ namespace tesla_wpf {
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// 双击通知栏图标，让窗体置顶
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NotifyIcon_DbClick(object sender, MouseButtonEventArgs e) {
+            Topmost = false;
+            Topmost = true;
+            Topmost = false;
+        }
+        /// <summary>
+        /// 退出
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MenuExit_Click(object sender, EventArgs e) {
+            exit();
+        }
+
+        /// <summary>
+        /// 设置
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MenuSetting_Click(object sender, EventArgs e) {
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void exit() {
+            //this.NotifyIcon.Close();
+            Close();
+            GC.Collect();
+            GC.WaitForFullGCApproach();
         }
     }
 }
