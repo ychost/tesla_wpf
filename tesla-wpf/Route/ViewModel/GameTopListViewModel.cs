@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using MaterialDesignThemes.Wpf;
 using tesla_wpf.Model.Game;
+using tesla_wpf.Model.GameTop;
 using tesla_wpf.Model.Setting;
+using Vera.Wpf.Lib.Component;
 using Vera.Wpf.Lib.Mvvm;
 
 namespace tesla_wpf.Route.ViewModel {
@@ -14,7 +18,19 @@ namespace tesla_wpf.Route.ViewModel {
     /// </summary>
     public class GameTopListViewModel : BaseViewModel {
         public List<Game> Games { get => GetProperty<List<Game>>(); set => SetProperty(value); }
+        public ICommand AddGameCmd => new MdCommand(addGameExec);
 
+        /// <summary>
+        /// 添加游戏
+        /// </summary>
+        /// <param name="obj"></param>
+        private async void addGameExec(object obj) {
+            var items = Edit.GenerateByType<GameAdd>();
+            var dialog = new EditDialog("添加游戏", items, new GameAdd(), 200);
+            var game = await DialogHost.Show(dialog) as GameAdd;
+            // 上传游戏内容
+            Console.WriteLine(game);
+        }
 
         protected override void InitRuntimeData() {
             InitDesignData();
@@ -30,7 +46,7 @@ namespace tesla_wpf.Route.ViewModel {
             Games = new List<Game>() {
                 new Game() {
                     Name = "泰拉瑞亚",
-                    Description = "我是牛逼的沙盒游戏，宇宙第一",
+                    Description = "我是牛逼的沙盒游戏，宇宙第一，呜哈哈哈哈哈",
                     Top3Users = top3Users
                 },
                 new Game() {

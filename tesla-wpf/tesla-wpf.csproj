@@ -181,6 +181,9 @@
     <Compile Include="Component\AvatarList.xaml.cs">
       <DependentUpon>AvatarList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Component\GameTopAdd.xaml.cs">
+      <DependentUpon>GameTopAdd.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Component\GameTopListItem.xaml.cs">
       <DependentUpon>GameTopListItem.xaml</DependentUpon>
     </Compile>
@@ -192,6 +195,7 @@
     <Compile Include="Helper\AssetsHelper.cs" />
     <Compile Include="Helper\NetworkHelper.cs" />
     <Compile Include="Model\GameTop\Game.cs" />
+    <Compile Include="Model\GameTop\GameAdd.cs" />
     <Compile Include="Model\MenuItem.cs" />
     <Compile Include="Model\Setting\LoginHistory.cs" />
     <Compile Include="Model\Setting\User.cs" />
@@ -220,6 +224,10 @@
     </Compile>
     <Compile Include="Toolkit\ConvertToolkit.cs" />
     <Page Include="Component\AvatarList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Component\GameTopAdd.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

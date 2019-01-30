@@ -7,38 +7,43 @@
              xmlns:component="clr-namespace:tesla_wpf.Component"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              d:DataContext="{Binding Source={StaticResource ViewModel}}"
+             d:DesignHeight="200"
+             d:DesignWidth="400"
              mc:Ignorable="d" >
     <UserControl.Resources>
         <local:GameTopListItem x:Key="ViewModel"/>
     </UserControl.Resources>
     <Grid>
-        <materialDesign:Card Width="200">
+        <materialDesign:Card>
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="140" />
+                    <RowDefinition Height="1.8*" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <Image Height="140" Width="196" Stretch="UniformToFill"  x:Name="CoverImage"/>
-                <StackPanel Grid.Row="1" Margin="8 24 8 0" Height="85">
-                    <TextBlock FontWeight="Bold" x:Name="TitleTextBlock"> Cycling</TextBlock>
+                <Image   Stretch="UniformToFill" Grid.Row="0" x:Name="CoverImage" Source="/tesla-wpf;component/Assets/mountains.jpg">
+                    <Image.Effect>
+                        <DropShadowEffect Color="Black" Direction="270" ShadowDepth="1" Opacity="1" />
+                    </Image.Effect>
+                </Image>
+                <StackPanel Grid.Row="1" Margin="8 15 8 0" >
+                    <TextBlock FontWeight="Bold" Foreground="#1890ff" x:Name="TitleTextBlock"> Cycling</TextBlock>
                     <TextBlock TextWrapping="Wrap" x:Name="DescriptionTextBlock" VerticalAlignment="Top" HorizontalAlignment="Left">
                         A great way to keep fit and for get about the constant grind of IT.
                     </TextBlock>
                 </StackPanel>
-                <DockPanel HorizontalAlignment="Left" Grid.Row="2"  Margin="8" Width="190">
-                    <TextBlock Foreground="Gray" Text="1 天前" VerticalAlignment="Center" FontSize="10" DockPanel.Dock="Left"/>
-                    <Grid DockPanel.Dock="Right" Width="100" HorizontalAlignment="Right">
+                <Grid  Grid.Row="2"  Margin="8">
+                    <TextBlock Foreground="Gray" Text="1 天前" VerticalAlignment="Center" FontSize="10" />
+                    <Grid Width="100" HorizontalAlignment="Right">
                         <component:AvatarList x:Name="AvatarList" HorizontalAlignment="Right" Margin="0,0,30,0" />
-                        <materialDesign:PopupBox Style="{StaticResource MaterialDesignToolPopupBox}" HorizontalAlignment="Right"
-                                                 >
+                        <materialDesign:PopupBox Style="{StaticResource MaterialDesignToolPopupBox}" HorizontalAlignment="Right" >
                             <StackPanel>
                                 <Button Content="查看" Click="ViewGame_Click"/>
                                 <Button Content="编辑" Click="EditGame_Click" x:Name="EditButton" />
                             </StackPanel>
                         </materialDesign:PopupBox>
                     </Grid>
-                </DockPanel>
+                </Grid>
             </Grid>
         </materialDesign:Card>
     </Grid>

@@ -47,6 +47,17 @@ namespace tesla_wpf {
         /// 登录命令
         /// </summary>
         public ICommand LoginCmd => new MdCommand(loginExec, canLogin);
+        private ImageSource avatar;
+        public ImageSource Avatar {
+            get => avatar;
+            set {
+                if (avatar != value) {
+                    avatar = value;
+                    onPropertyChanged(nameof(Avatar));
+                }
+            }
+        }
+
 
         /// <summary>
         /// 正在登录中
@@ -89,6 +100,7 @@ namespace tesla_wpf {
 
         public LoginWindow() {
             InitializeComponent();
+            Avatar = AssetsHelper.UserImaggeSource;
             DataContext = this;
             SqliteHelper.Exec(db => {
                 loginHistories = db.Query<LoginHistory>($"Select * From {nameof(LoginHistory)}");
@@ -105,6 +117,7 @@ namespace tesla_wpf {
         /// <param name="param"></param>
         public LoginWindow(object param) {
             InitializeComponent();
+            Avatar = AssetsHelper.UserImaggeSource;
             DataContext = this;
             SqliteHelper.Exec(db => {
                 loginHistories = db.Query<LoginHistory>($"Select * From {nameof(LoginHistory)}");
@@ -250,9 +263,9 @@ namespace tesla_wpf {
             var tb = e.Source as TextBox;
             var user = (from u in loginHistories where u.Name == tb.Text select u).LastOrDefault();
             if (user != null) {
-                Avatar.ImageSource = user.AvatarImageSource;
+                Avatar = user.AvatarImageSource;
             } else {
-                Avatar.ImageSource = AssetsHelper.UserImaggeSource;
+                Avatar = AssetsHelper.UserImaggeSource;
             }
         }
 
@@ -317,7 +330,7 @@ namespace tesla_wpf {
         /// 
         /// </summary>
         private void exit() {
-            //this.NotifyIcon.Close();
+            this.NotifyIcon.Close();
             Close();
             GC.Collect();
             GC.WaitForFullGCApproach();

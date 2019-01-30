@@ -28,7 +28,7 @@ namespace tesla_wpf.Model.Game {
                         coverImage = AssetsHelper.FetchImage(Cover);
                     }
                 } catch {
-                    return AssetsHelper.OopsImageSource;
+                    return AssetsHelper.MountainImageSource;
                 }
                 return coverImage;
             }

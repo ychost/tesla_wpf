@@ -26,6 +26,8 @@ namespace tesla_wpf.Helper {
         /// </summary>
         public static ImageSource OopsImageSource = new BitmapImage(GetAssets("oops.png"));
 
+        public static ImageSource MountainImageSource = new BitmapImage(GetAssets("mountains.jpg"));
+
         /// <summary>
         /// 获取 Assets 文件夹下面的资源
         /// </summary>
@@ -60,16 +62,8 @@ namespace tesla_wpf.Helper {
         /// <param name="name"></param>
         /// <returns></returns>
         public static ImageSource LoadLocalAvatar(string name) {
-            var path = Path.Combine(Environment.CurrentDirectory, @".\avatars\" + name);
+            var path = Path.Combine(Environment.CurrentDirectory, @"avatars\" + name);
             return LoadImage(new Uri(path));
-            //var bitmap = new BitmapImage();
-            //using (var stream = new FileStream(path, FileMode.Open)) {
-            //    bitmap.BeginInit();
-            //    bitmap.CacheOption = BitmapCacheOption.OnLoad;
-            //    bitmap.StreamSource = stream;
-            //    bitmap.EndInit();
-            //}
-            //return bitmap;
         }
 
         /// <summary>
@@ -85,7 +79,6 @@ namespace tesla_wpf.Helper {
             //这样就可以删除 UriSource 文件
             image.CacheOption = BitmapCacheOption.OnLoad;
             image.EndInit();
-            image.Freeze();
             return image;
         }
 

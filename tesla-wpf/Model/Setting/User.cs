@@ -26,14 +26,11 @@ namespace tesla_wpf.Model.Setting {
         [Ignore]
         public ImageSource AvatarImageSource {
             get {
-                if (avatarImageSource != null) {
-                    return avatarImageSource;
-                }
                 if (avatarImageSource == null) {
                     try {
                         avatarImageSource = AssetsHelper.FetchImage(Avatar);
+                        //avatarImageSource = AssetsHelper.LoadLocalAvatar(Name);
                     } catch (Exception e) {
-                        Console.WriteLine(e);
                         return AssetsHelper.UserImaggeSource;
                     }
                 }
