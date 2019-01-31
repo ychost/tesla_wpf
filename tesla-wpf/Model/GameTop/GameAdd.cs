@@ -20,7 +20,7 @@ namespace tesla_wpf.Model.GameTop {
         /// <summary>
         /// 描述
         /// </summary>
-        [Edit(ItemName = "描述", ItemIcon = PackIconKind.Details, ItemType = EditItemType.MultiInput, Order = 5)]
+        [Edit(ItemName = "描述", ItemIcon = PackIconKind.Details, ItemType = EditItemType.MultiInput, Order = 3)]
         [StringLength(maximumLength: 140, ErrorMessage = "长度不能超过 140")]
         public string Description { get; set; }
 
@@ -34,13 +34,14 @@ namespace tesla_wpf.Model.GameTop {
         /// <summary>
         /// 备注
         /// </summary>
-        [Edit(ItemName = "备注", ItemIcon = PackIconKind.Note, Order = 3)]
+        [Edit(ItemName = "备注", ItemIcon = PackIconKind.Note, Order = 5)]
         public string Remark { get; set; }
 
         /// <summary>
         /// 封面
         /// </summary>
-        [Edit(ItemName = "封面", ItemIcon = PackIconKind.FileImage, ItemType = EditItemType.FileChoose, FileChooseFilter = "PNG图片|*.png|JPG图片| *.jpg", Order = 4)]
+        [Edit(ItemName = "封面", ItemIcon = PackIconKind.FileImage, ItemType = EditItemType.FileChoose,
+            FileChooseFilter = "(*.jpg*.png*.jpeg)|*.jpg;*.png;*.jpeg", Order = 4, FileChooseTitle = "选择游戏封面")]
         [Required(ErrorMessage = "游戏封面不能为空")]
         public string CoverPath { get; set; }
     }

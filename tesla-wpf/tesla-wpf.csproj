@@ -193,6 +193,7 @@
     <Compile Include="Extensions\HttpRestService.cs" />
     <Compile Include="Extensions\VisualTreeHelperExtensions.cs" />
     <Compile Include="Helper\AssetsHelper.cs" />
+    <Compile Include="Helper\FileCacheHelper.cs" />
     <Compile Include="Helper\NetworkHelper.cs" />
     <Compile Include="Model\GameTop\Game.cs" />
     <Compile Include="Model\GameTop\GameAdd.cs" />
@@ -201,6 +202,7 @@
     <Compile Include="Model\Setting\User.cs" />
     <Compile Include="Model\TabItem.cs" />
     <Compile Include="Rest\Rest.cs" />
+    <Compile Include="Rest\RsGameTopApi.cs" />
     <Compile Include="Rest\RsSystemApi.cs" />
     <Compile Include="Rest\RestJsonSerializer.cs" />
     <Compile Include="Rest\RsUserLogin.cs" />

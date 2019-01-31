@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Cache;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Caching;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -25,7 +28,6 @@ namespace tesla_wpf.Helper {
         /// 默认的 not found oops!
         /// </summary>
         public static ImageSource OopsImageSource = new BitmapImage(GetAssets("oops.png"));
-
         public static ImageSource MountainImageSource = new BitmapImage(GetAssets("mountains.jpg"));
 
         /// <summary>
@@ -57,6 +59,46 @@ namespace tesla_wpf.Helper {
         }
 
         /// <summary>
+        /// 缓存有图片则从缓存加载
+        /// 否则 加载云图片,比如 腾讯云 Cos,然后再缓存下来
+        /// </summary>
+        /// <param name="cloudKey">Cos 里面的 key</param>
+        /// <returns></returns>
+        public static ImageSource FetchCloudImageAsync(string cloudKey) {
+            var url = "https://tesla-1252572735.cos.ap-chengdu.myqcloud.com" + cloudKey;
+            var stream = FileCacheHelper.Hit(url);
+            return LoadImageStream(stream);
+        }
+
+        /// <summary>
+        /// 从流中生产图片
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        public static ImageSource LoadImageStream(Stream stream) {
+            using (stream) {
+                var image = new BitmapImage();
+                image.BeginInit();
+                image.StreamSource = stream;
+                image.CacheOption = BitmapCacheOption.OnLoad;
+                image.EndInit();
+                image.Freeze();
+                return image;
+            }
+        }
+
+
+        /// <summary>
+        /// 从本地加载缓存文件
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        static Uri LoadLocalCache(string key) {
+            //var path = 
+            return null;
+        }
+
+        /// <summary>
         /// 加载本地头像
         /// </summary>
         /// <param name="name"></param>
@@ -73,6 +115,7 @@ namespace tesla_wpf.Helper {
         /// <returns></returns>
         public static ImageSource LoadImage(Uri uri) {
             var image = new BitmapImage();
+            image.UriCachePolicy = new RequestCachePolicy(RequestCacheLevel.CacheIfAvailable);
             image.BeginInit();
             image.UriSource = uri;
             //update 2019-1-27

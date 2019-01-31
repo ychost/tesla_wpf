@@ -6,8 +6,9 @@
              xmlns:local="clr-namespace:tesla_wpf.Component"
              xmlns:component="clr-namespace:tesla_wpf.Component"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:con="http://schemas.kent.boogaart.com/converters"
              d:DataContext="{Binding Source={StaticResource ViewModel}}"
-             d:DesignHeight="200"
+             d:DesignHeight="400"
              d:DesignWidth="400"
              mc:Ignorable="d" >
     <UserControl.Resources>
@@ -21,17 +22,29 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <Image   Stretch="UniformToFill" Grid.Row="0" x:Name="CoverImage" Source="/tesla-wpf;component/Assets/mountains.jpg">
+                <Image Stretch="UniformToFill" Grid.Row="0" x:Name="CoverImage" Source="/tesla-wpf;component/Assets/mountains.jpg">
                     <Image.Effect>
                         <DropShadowEffect Color="Black" Direction="270" ShadowDepth="1" Opacity="1" />
                     </Image.Effect>
                 </Image>
-                <StackPanel Grid.Row="1" Margin="8 15 8 0" >
-                    <TextBlock FontWeight="Bold" Foreground="#1890ff" x:Name="TitleTextBlock"> Cycling</TextBlock>
-                    <TextBlock TextWrapping="Wrap" x:Name="DescriptionTextBlock" VerticalAlignment="Top" HorizontalAlignment="Left">
-                        A great way to keep fit and for get about the constant grind of IT.
+                <Grid Grid.Row="1" Margin="8 15 8 0"
+                      x:Name="DescGrid"
+                      Height="{Binding ActualHeight,ElementName=CoverImage,Converter={con:ExpressionConverter {}{0} * 0.55}}" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" FontWeight="Bold" Foreground="#1890ff" x:Name="TitleTextBlock" VerticalAlignment="Top" />
+                    <TextBlock Grid.Row="1" 
+                          TextTrimming="WordEllipsis" 
+                          TextWrapping="Wrap" 
+                          LineStackingStrategy="BlockLineHeight"
+                          LineHeight="20"
+                          VerticalAlignment="Top"
+                          Height="45"
+                          x:Name="DescriptionTextBlock" HorizontalAlignment="Left">
                     </TextBlock>
-                </StackPanel>
+                </Grid>
                 <Grid  Grid.Row="2"  Margin="8">
                     <TextBlock Foreground="Gray" Text="1 天前" VerticalAlignment="Center" FontSize="10" />
                     <Grid Width="100" HorizontalAlignment="Right">

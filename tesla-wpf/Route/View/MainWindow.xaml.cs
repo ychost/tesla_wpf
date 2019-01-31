@@ -28,7 +28,7 @@ namespace tesla_wpf.Route.View {
             var vm = new MainWindowViewModel();
             DataContext = vm;
             InitializeComponent();
-            ShowInTaskbar = false;
+            ShowInTaskbar = true;
         }
 
 
