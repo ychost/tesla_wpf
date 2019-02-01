@@ -12,10 +12,12 @@
              xmlns:vm ="clr-namespace:tesla_wpf.Route.ViewModel"
              xmlns:con="http://schemas.kent.boogaart.com/converters"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             d:DataContext="{Binding Source={StaticResource ViewModel}}"
+    xmlns:toolbok="clr-namespace:Vera.Wpf.Lib.Mvvm;assembly=Vera.Wpf.Lib"
+    d:DataContext="{Binding Source={StaticResource ViewModel}}"
              d:DesignHeight="1080" d:DesignWidth="1920">
     <UserControl.Resources>
         <vm:GameTopListViewModel x:Key="ViewModel"/>
+        <toolbok:BindingProxy Data="{Binding}" x:Key="Proxy"/>
     </UserControl.Resources>
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -37,12 +39,12 @@
                                 Converter={con:ExpressionConverter {}{0} * 0.007}}" />
                             <component:GameTopListItem 
 
-                            x:Name="Item" Grid.Column="1"
-                                               Width="{Binding ActualWidth,RelativeSource={RelativeSource AncestorType=UserControl},
-                                               Converter={con:ExpressionConverter {}{0} * 0.18}}"
-                        Height="{Binding ActualWidth,RelativeSource={RelativeSource Self},Converter={con:ExpressionConverter {}{0} * 0.918}}"
-                        Description="{Binding Description}" Cover="{Binding CoverImage}"
-                    Title="{Binding Name}" Top3Users="{Binding Top3Users}"
+                            x:Name="Item" Grid.Column="1" Width="{Binding ActualWidth,RelativeSource={RelativeSource AncestorType=UserControl},
+                                              Converter={con:ExpressionConverter {}{0} * 0.18}}"
+                                              Height="{Binding ActualWidth,RelativeSource={RelativeSource Self},Converter={con:ExpressionConverter {}{0} * 0.968}}"
+                                              Description="{Binding Description}" Cover="{Binding CoverImage}"
+                                              Title="{Binding Name}" Top3Users="{Binding Top3Users}"
+                                              OnViewGameCmd="{Binding Data.ViewGameCmd,Source={StaticResource Proxy}}"
                                                >
                             </component:GameTopListItem>
                             <Rectangle Fill="Transparent" Grid.Column="2" Width="{Binding ActualWidth,RelativeSource={RelativeSource AncestorType=UserControl},

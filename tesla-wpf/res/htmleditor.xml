@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<htmleditor>
+  <visualmode>
+    <fontfamilies>
+      <add value="宋体" />
+      <add value="新宋体" />
+      <add value="仿宋" />
+      <add value="楷体" />
+      <add value="黑体" />
+      <add value="微软雅黑" />
+      <add value="Arial" />
+      <add value="Calibri" />
+      <add value="Cambria" />
+      <add value="Candara" />
+      <add value="Century" />
+      <add value="Consolas" />
+      <add value="Constantia" />
+      <add value="Corbel" />
+      <add value="Courier New" />
+      <add value="Segoe UI" />
+      <add value="Tahoma" />
+      <add value="Times New Roman" />
+      <add value="Verdana" />
+      <add value="Vrinda" />
+    </fontfamilies>
+    <color>
+      <add value="#E53333"/>
+      <add value="#E56600"/>
+      <add value="#FF9900"/>
+      <add value="#64451D"/>
+      <add value="#DFC5A4"/>
+      <add value="#FFE500"/>
+
+      <add value="#009900"/>
+      <add value="#006600"/>
+      <add value="#99BB00"/>
+      <add value="#B8D100"/>
+      <add value="#60D978"/>
+      <add value="#00D5FF"/>
+
+      <add value="#337FE5"/>
+      <add value="#003399"/>
+      <add value="#4C33E5"/>
+      <add value="#9933E5"/>
+      <add value="#CC33E5"/>
+      <add value="#EE33EE"/>
+
+      <add value="#FFFFFF"/>
+      <add value="#CCCCCC"/>
+      <add value="#999999"/>
+      <add value="#666666"/>
+      <add value="#333333"/>
+      <add value="#000000"/>
+    </color>
+  </visualmode>
+  <sourcemode>
+    <fontfamily value="Consolas" />
+    <fontsize value="12" />
+  </sourcemode>
+</htmleditor>

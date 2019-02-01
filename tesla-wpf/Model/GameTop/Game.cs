@@ -14,6 +14,7 @@ namespace tesla_wpf.Model.Game {
     public class Game {
         public string Name { get; set; }
         public string Description { get; set; }
+        public string DetailContent { get; set; }
         public string CoverUrl { get; set; }
         public string OfficialWebsite;
         public string Remark;

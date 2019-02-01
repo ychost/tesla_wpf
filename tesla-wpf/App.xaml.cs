@@ -9,12 +9,22 @@ using System.Threading.Tasks;
 using System.Windows;
 using tesla_wpf.Model.Setting;
 using Vera.Wpf.Lib.Helper;
+using YEvent;
 
 namespace tesla_wpf {
     /// <summary>
     /// App.xaml 的交互逻辑
     /// </summary>
     public partial class App : Application {
+        /// <summary>
+        /// 事件中心
+        /// </summary>
+        public static YEventStore Store = new YEventStore();
+
+        /// <summary>
+        /// 初始化数据库啥的
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnStartup(StartupEventArgs e) {
             base.OnStartup(e);
             SqliteHelper.Init(Path.GetFullPath("./tesla.db"));

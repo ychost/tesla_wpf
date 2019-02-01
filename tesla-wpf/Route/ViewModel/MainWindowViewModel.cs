@@ -11,6 +11,7 @@ using System.Windows.Input;
 using Dragablz;
 using MaterialDesignThemes.Wpf;
 using RestSharp;
+using tesla_wpf.Event;
 using tesla_wpf.Extensions;
 using tesla_wpf.Helper;
 using tesla_wpf.Model;
@@ -67,6 +68,9 @@ namespace tesla_wpf.Route.ViewModel {
         }
 
         private async void setSelectedMenu(MenuItem value) {
+            if (value == null) {
+                return;
+            }
             if (!(value.Content is System.Windows.Controls.UserControl view)) {
                 return;
             }
@@ -105,7 +109,10 @@ namespace tesla_wpf.Route.ViewModel {
                     oldTab?.Content?.InActive(null);
                     value?.Content.Active(null);
                     if (value != null) {
-                        (SelectedMenu, _) = MenuItem.GetMenu(MenuItems, value.BindMenuId, null);
+                        var (menu, _) = MenuItem.GetMenu(MenuItems, value.BindMenuId, null);
+                        if (menu != null) {
+                            SelectedMenu = menu;
+                        }
                     }
                 }
             }
@@ -121,6 +128,20 @@ namespace tesla_wpf.Route.ViewModel {
             // 获取用户
             User = App.User;
             handleUserSettings();
+            App.Store.Subscribe(typeof(AddTabEvent), (s, e) => {
+                var tabEvent = e.Payload as AddTabEvent;
+                var tab = new TabItem() {
+                    Header = tabEvent.TabName,
+                    Content = tabEvent.TabContent,
+                    // 不和 Menu 绑定
+                    // 动态添加的
+                    BindMenuId = -1,
+                };
+                TabItems.Add(tab);
+                if (tabEvent.IsSwitchIt) {
+                    SelectedTab = tab;
+                }
+            });
         }
 
 
@@ -191,6 +212,9 @@ namespace tesla_wpf.Route.ViewModel {
         /// </summary>
         void destroyMenuContent(TabItem tab) {
             var (menu, _) = MenuItem.GetMenu(MenuItems, tab.BindMenuId, null);
+            if (menu == null) {
+                return;
+            }
             // 复位标记
             (menu.Content as System.Windows.Controls.UserControl).Tag = false;
             // 销毁视图

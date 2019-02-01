@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="tesla_wpf.Route.View.GameTopDetail"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:tesla_wpf.Route.View"
+             xmlns:materialDesigin="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:vm ="clr-namespace:tesla_wpf.Route.ViewModel"
+             xmlns:ex="clr-namespace:Msl.HtmlEditor;assembly=Msl.HtmlEditor"
+             x:Name="UserControl"
+             mc:Ignorable="d" 
+             Background="{DynamicResource MaterialDesignPaper}"
+             d:DataContext="{Binding Source={StaticResource ViewModel}}"
+             d:DesignHeight="1080" d:DesignWidth="1920">
+    <UserControl.Resources>
+        <vm:GameTopDetailViewModel x:Key="ViewModel"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0">
+            <materialDesigin:Card  Height="{Binding ActualHeight,ElementName=UserControl}"  materialDesigin:ShadowAssist.ShadowDepth="Depth2">
+            <ex:HtmlEditor x:Name="Editor" />
+            </materialDesigin:Card>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -93,7 +93,7 @@ namespace tesla_wpf.Component {
 
         
         private void ViewGame_Click(object sender, RoutedEventArgs e) {
-            OnViewGameCmd?.Execute(null);
+            OnViewGameCmd?.Execute(this.DataContext);
         }
 
         private void EditGame_Click(object sender, RoutedEventArgs e) {

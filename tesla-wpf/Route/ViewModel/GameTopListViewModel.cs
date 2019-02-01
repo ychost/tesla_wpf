@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using MaterialDesignThemes.Wpf;
+using tesla_wpf.Event;
 using tesla_wpf.Extensions;
 using tesla_wpf.Model.Game;
 using tesla_wpf.Model.GameTop;
 using tesla_wpf.Model.Setting;
 using tesla_wpf.Rest;
+using tesla_wpf.Route.View;
 using Vera.Wpf.Lib.Component;
 using Vera.Wpf.Lib.Exceptions;
 using Vera.Wpf.Lib.Extensions;
@@ -26,6 +28,25 @@ namespace tesla_wpf.Route.ViewModel {
     public class GameTopListViewModel : BaseViewModel {
         public List<Game> Games { get => GetProperty<List<Game>>(); set => SetProperty(value); }
         public ICommand AddGameCmd => new MdCommand(addGameExec);
+        public ICommand ViewGameCmd => new MdCommand(viewGameExec);
+
+
+        public GameAdd GameAdd { get; set; } = new GameAdd();
+
+        /// <summary>
+        /// 查看游戏
+        /// </summary>
+        /// <param name="obj"></param>
+        private void viewGameExec(object obj) {
+            var game = obj as Game;
+            var detail = new GameTopDetail(game.DetailContent);
+            var addTabEvent = new AddTabEvent() {
+                TabName = game.Name,
+                IsSwitchIt = true,
+                TabContent = detail
+            };
+            App.Store.Dispatch(addTabEvent);
+        }
 
         /// <summary>
         /// 添加游戏
@@ -33,36 +54,31 @@ namespace tesla_wpf.Route.ViewModel {
         /// <param name="obj"></param>
         private async void addGameExec(object obj) {
             var items = Edit.GenerateByType<GameAdd>();
-            var editGame = new GameAdd() {
-                Name = "泰拉瑞亚",
-                Description = "沙盒游戏",
-                OfficialWebsite = "haha",
-                Remark = "remark"
-            };
-            var dialog = new EditDialog("添加游戏", items, editGame, 200);
-            var game = await DialogHost.Show(dialog) as GameAdd;
-            if (game == null) {
+            var dialog = new EditDialog("添加游戏", items, GameAdd, 300, 600);
+            var res = await DialogHost.Show(dialog) as GameAdd;
+            if (res == null) {
                 return;
             }
+            GameAdd = res;
             FileStream coverStream = null;
             try {
                 DialogHost.Show(LoadingDialog.Create(Visibility.Visible, "正在上传..."));
-                coverStream = new FileStream(game.CoverPath, FileMode.Open, FileAccess.Read);
+                coverStream = new FileStream(GameAdd.CoverPath, FileMode.Open, FileAccess.Read);
                 var rest = await HttpRestService.ForAuthApi<RsGameTopApi>().UploadCover(
-                    game.Name?.Escape(), game.Description?.Escape(), game.Remark?.Escape(), game.OfficialWebsite?.Escape(),
-                     new Refit.StreamPart(coverStream, Path.GetFileName(game.CoverPath), "image/jpeg"));
+                    GameAdd.Name, GameAdd.Description, GameAdd.Remark, GameAdd.OfficialWebsite,
+                     new Refit.StreamPart(coverStream, Path.GetFileName(GameAdd.CoverPath), "image/jpeg"));
                 if (HttpRestService.ForData(rest, out var data)) {
                     if (!data) {
                         throw new UploadException(rest.Message);
                     }
                     NotifyHelper.ShowSuccessMessage("上传成功!");
+                    // 添加成功重新赋值
+                    GameAdd = new GameAdd();
                 }
             } catch (UploadException e) {
                 NotifyHelper.ShowErrorMessage(e.Message);
-                return;
             } catch (Exception e) {
                 NotifyHelper.ShowErrorMessage("上传失败!");
-                return;
             } finally {
                 coverStream?.Close();
                 DialogHost.CloseDialogCommand.Execute(null, null);
