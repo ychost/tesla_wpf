@@ -11,8 +11,17 @@ namespace tesla_wpf.Route.ViewModel {
     /// <date>2019-2-1</date>
     /// </summary>
     public class GameTopDetailViewModel : BaseViewModel {
+        /// <summary>
+        /// 
+        /// </summary>
+        public string MdText { get => GetProperty<string>(); set => SetProperty(value); }
+
         public GameTopDetailViewModel() {
 
+        }
+
+        public GameTopDetailViewModel(string text) {
+            MdText = text;
         }
 
         protected override void InitDesignData() {

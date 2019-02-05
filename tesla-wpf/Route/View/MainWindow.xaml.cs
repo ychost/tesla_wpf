@@ -29,6 +29,9 @@ namespace tesla_wpf.Route.View {
             DataContext = vm;
             InitializeComponent();
             ShowInTaskbar = true;
+            IntPtr hwnd = new System.Windows.Interop.WindowInteropHelper(this).Handle;
+            int oldStyle = Win32Helper.GetWindowLong(hwnd, Win32Helper.GWL_STYLE);
+            Win32Helper.SetWindowLong(hwnd, Win32Helper.GWL_STYLE, oldStyle & ~Win32Helper.WS_BORDER & ~Win32Helper.WS_CAPTION & ~Win32Helper.WS_DLGFRAME);
         }
 
 

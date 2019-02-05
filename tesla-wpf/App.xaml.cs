@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -28,6 +29,9 @@ namespace tesla_wpf {
         protected override void OnStartup(StartupEventArgs e) {
             base.OnStartup(e);
             SqliteHelper.Init(Path.GetFullPath("./tesla.db"));
+            FileCacheHelper.AppCacheDirectory = string.Format("{0}\\{1}\\Cache\\",
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                Process.GetCurrentProcess().ProcessName);
         }
 
         /// </summary>
@@ -55,5 +59,6 @@ namespace tesla_wpf {
         public static string GetHttpToken() {
             return User.Token;
         }
+
     }
 }

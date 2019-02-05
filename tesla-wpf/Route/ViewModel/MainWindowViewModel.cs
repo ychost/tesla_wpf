@@ -67,7 +67,7 @@ namespace tesla_wpf.Route.ViewModel {
             }
         }
 
-        private async void setSelectedMenu(MenuItem value) {
+        private async Task setSelectedMenu(MenuItem value) {
             if (value == null) {
                 return;
             }
@@ -101,19 +101,37 @@ namespace tesla_wpf.Route.ViewModel {
         /// 显示的 Tab
         /// </summary>
         public TabItem SelectedTab {
-            get => GetProperty<TabItem>(); set {
-                var oldTab = GetProperty<TabItem>();
-                // 上个 Tab 冻结
-                // 当前 Tab 激活
-                if (SetProperty(value)) {
-                    oldTab?.Content?.InActive(null);
-                    value?.Content.Active(null);
-                    if (value != null) {
-                        var (menu, _) = MenuItem.GetMenu(MenuItems, value.BindMenuId, null);
-                        if (menu != null) {
-                            SelectedMenu = menu;
-                        }
+            get => GetProperty<TabItem>(); set => setTab(value);
+        }
+
+        /// <summary>
+        /// 设置 Tab
+        /// </summary>
+        /// <param name="value"></param>
+        private async void setTab(TabItem value) {
+            var oldTab = GetProperty<TabItem>();
+            // 上个 Tab 冻结
+            // 当前 Tab 激活
+            if (SetProperty(value, nameof(SelectedTab))) {
+                oldTab?.Content?.InActive(null);
+                if (value == null) {
+                    return;
+                }
+                // 如果是动态菜单那么, 这里首先初始化一次
+                if (value.Content is IDynamicMenu) {
+                    if (!(value.Content is System.Windows.Controls.UserControl view)) {
+                        return;
                     }
+                    // 通过 Tag 来标记，进行延迟初始化
+                    if (view.Tag == null || (bool)view.Tag == false) {
+                        view.Tag = true;
+                        await ViewHelper.ExecWithLoadingDialog(value.Content.Initialize);
+                    }
+                }
+                value.Content.Active(null);
+                var (menu, _) = MenuItem.GetMenu(MenuItems, value.BindMenuId, null);
+                if (menu != null) {
+                    SelectedMenu = menu;
                 }
             }
         }
@@ -178,9 +196,7 @@ namespace tesla_wpf.Route.ViewModel {
                     MenuItems = ConvertToolkit.ConvertMenus(settings.Menus);
                     Application.Current.Dispatcher.Invoke(() => {
                         TabItems.CollectionChanged += disptachTabEvent;
-                        //TabItems.Add(MenuItems[0].ToTabItem());
-                        SelectedTab = MenuItems[0].ToTabItem();
-                        TabItems.Add(SelectedTab);
+                        setSelectedMenu(MenuItems[0]);
                     });
                 } else {
                     await Application.Current.Dispatcher.Invoke(async () => {

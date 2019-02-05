@@ -39,7 +39,10 @@ namespace tesla_wpf.Route.ViewModel {
         /// <param name="obj"></param>
         private void viewGameExec(object obj) {
             var game = obj as Game;
-            var detail = new GameTopDetail(game.DetailContent);
+            var text = new StringBuilder();
+            text.Append($"![Cover]({"https://tesla-1252572735.cos.ap-chengdu.myqcloud.com" + game.CoverUrl})\r\n\r\n");
+            text.Append(game.Description);
+            var detail = new GameTopDetail(text.ToString());
             var addTabEvent = new AddTabEvent() {
                 TabName = game.Name,
                 IsSwitchIt = true,

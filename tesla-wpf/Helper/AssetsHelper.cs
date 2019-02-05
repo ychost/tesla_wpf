@@ -12,6 +12,7 @@ using System.Web;
 using System.Web.Caching;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Vera.Wpf.Lib.Helper;
 
 namespace tesla_wpf.Helper {
     /// <summary>

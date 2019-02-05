@@ -152,6 +152,15 @@ namespace tesla_wpf.Model {
     }
 
     /// <summary>
+    /// 动态菜单, 不在菜单列表里面的,动态生成的
+    /// 也支持这些扩展的方法
+    /// </summary>
+    public interface IDynamicMenu : IMenu {
+        
+    }
+
+
+    /// <summary>
     /// 菜单被关闭，生命周期结束
     /// </summary>
     public interface IMenuDestroy : IMenu {

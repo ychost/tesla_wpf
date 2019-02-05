@@ -11,12 +11,11 @@
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
+        WindowStyle="None"
         TextElement.FontSize="13"
         TextOptions.TextFormattingMode="Ideal" 
         TextOptions.TextRenderingMode="Auto"
-        WindowStyle="None"
         xmlns:model="clr-namespace:tesla_wpf.Model"
-     
         d:DesignHeight="1080"
         d:DesignWidth="1920"
         Background="{DynamicResource MaterialDesignPaper}"
@@ -25,7 +24,7 @@
         xmlns:behaviours="clr-namespace:Vera.Wpf.Lib.Mvvm;assembly=Vera.Wpf.Lib"
         xmlns:component="clr-namespace:Vera.Wpf.Lib.Component;assembly=Vera.Wpf.Lib"
         xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
-        AllowsTransparency="True"
+        AllowsTransparency="False"
         >
     <Window.Resources>
         <vm:MainWindowViewModel x:Key="ViewModel"/>
@@ -121,10 +120,11 @@
                         <dragablz:TabablzControl BorderThickness="0" 
                                              Margin="0,-1,0,1" 
                                              FixedHeaderCount="1"
-                                             ShowDefaultCloseButton="True"
                                              ItemsSource="{Binding TabItems}"
                                              SelectedValue="{Binding SelectedTab}"
-                                             x:Name="TabControl">
+                                             ShowDefaultCloseButton="True"
+                                            x:Name="TabControl">
+
                             <dragablz:TabablzControl.InterTabController>
                                 <dragablz:InterTabController />
                             </dragablz:TabablzControl.InterTabController>

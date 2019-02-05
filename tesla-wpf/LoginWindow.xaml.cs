@@ -2,30 +2,18 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using MaterialDesignThemes.Wpf;
 using tesla_wpf.Extensions;
 using tesla_wpf.Helper;
 using tesla_wpf.Model.Setting;
 using tesla_wpf.Rest;
 using tesla_wpf.Route.View;
 using tesla_wpf.Toolkit;
-using Vera.Wpf.Lib.Component;
 using Vera.Wpf.Lib.Helper;
 using Vera.Wpf.Lib.Mvvm;
 
@@ -163,7 +151,7 @@ namespace tesla_wpf {
                     if (HttpRestService.ForData(rest, out var message)) {
                         gotoMainWindow(user);
                     }
-                } catch {
+                } catch (Exception e) {
                     await Dispatcher.BeginInvoke(new Action(() => {
                         NotifyHelper.ShowWarnMessage("用户身份已失效，请重新登录");
                     }));

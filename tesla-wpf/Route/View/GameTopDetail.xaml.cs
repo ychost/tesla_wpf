@@ -19,15 +19,19 @@ namespace tesla_wpf.Route.View {
     /// <summary>
     /// GameTopDetail.xaml 的交互逻辑
     /// </summary>
-    public partial class GameTopDetail : UserControl, IMenu {
-        public GameTopDetail(string content, bool canEdit = true) {
+    public partial class GameTopDetail : UserControl, IDynamicMenu, IMenuInit {
+        private string text;
+
+        public GameTopDetail() {
+        }
+
+        public GameTopDetail(string content) : this() {
+            this.text = content;
+        }
+
+        public void OnInit(object param = null) {
             InitializeComponent();
-            DataContext = new GameTopDetailViewModel();
-            //Editor.ContentHtml = "<p><b>Smith Html Editor</b></p><p><a href=\"http://smithhtmleditor.codeplex.com\">http://smithhtmleditor.codeplex.com/</a></p>";
-            //Editor.IsEnabled = canEdit;
-            Editor.Loaded += (s, e) => {
-                Editor.ContentHtml= "<p> hello world </p>";
-            };
+            this.DataContext = new GameTopDetailViewModel(text);
         }
     }
 }

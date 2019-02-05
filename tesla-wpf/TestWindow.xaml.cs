@@ -12,14 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using tesla_wpf.Model;
+using Vera.Wpf.Lib.Component;
 
-namespace tesla_wpf.Route.View {
+namespace tesla_wpf {
     /// <summary>
-    /// GameTopDetailEdit.xaml 的交互逻辑
+    /// TestWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class GameTopDetailEdit : UserControl, IMenu {
-        public GameTopDetailEdit() {
+    public partial class TestWindow : Window {
+        public TestWindow() {
             InitializeComponent();
         }
     }
