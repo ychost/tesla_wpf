@@ -27,11 +27,27 @@ namespace tesla_wpf.Route.ViewModel {
     /// </summary>
     public class GameTopListViewModel : BaseViewModel {
         public List<Game> Games { get => GetProperty<List<Game>>(); set => SetProperty(value); }
+        public GameAdd GameAdd { get; set; } = new GameAdd();
+
         public ICommand AddGameCmd => new MdCommand(addGameExec);
         public ICommand ViewGameCmd => new MdCommand(viewGameExec);
+        public ICommand EditGameCmd => new MdCommand(editGameExec);
 
+        /// <summary>
+        /// 编辑游戏数据
+        /// </summary>
+        /// <param name="obj"></param>
+        private void editGameExec(object obj) {
+            var game = obj as Game;
+            var edit = new GameDetailEdit(game);
+            var addTab = new AddTabEvent() {
+                TabName = "编辑-" + game.Name,
+                IsSwitchIt = true,
+                TabContent = edit
+            };
+            App.Store.Dispatch(addTab);
+        }
 
-        public GameAdd GameAdd { get; set; } = new GameAdd();
 
         /// <summary>
         /// 查看游戏
@@ -39,10 +55,7 @@ namespace tesla_wpf.Route.ViewModel {
         /// <param name="obj"></param>
         private void viewGameExec(object obj) {
             var game = obj as Game;
-            var text = new StringBuilder();
-            text.Append($"![Cover]({"https://tesla-1252572735.cos.ap-chengdu.myqcloud.com" + game.CoverUrl})\r\n\r\n");
-            text.Append(game.Description);
-            var detail = new GameTopDetail(text.ToString());
+            var detail = new GameTopDetail(game);
             var addTabEvent = new AddTabEvent() {
                 TabName = game.Name,
                 IsSwitchIt = true,

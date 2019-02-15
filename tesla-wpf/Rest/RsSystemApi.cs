@@ -20,5 +20,8 @@ namespace tesla_wpf.Rest {
         [Post("/tesla-system/user/login?app=wpf")]
         Task<Rest<RsUser>> Login([Body] RsUserLogin userLogin);
 
+        [Multipart]
+        [Post("/tesla-system/cloud/image/upload")]
+        Task<Rest<string>> UploadImage([AliasAs("image")]StreamPart stream);
     }
 }

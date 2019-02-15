@@ -14,15 +14,22 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using MaterialDesignThemes.Wpf;
 using tesla_wpf.Model;
 using tesla_wpf.Route.ViewModel;
+using Vera.Wpf.Lib.Component;
 using Vera.Wpf.Lib.Helper;
 
 namespace tesla_wpf.Route.View {
     /// <summary>
     /// GameTopList.xaml 的交互逻辑
     /// </summary>
-    public partial class GameTopList : UserControl, IMenuInit, IMenuActive, IMenuInActive, IMenuDestroy {
+    public partial class GameTopList : UserControl, IMenuInit, IMenuActive, IMenuInActive, IMenuDestroy, IMenuAssureDestroy {
+        public async Task<bool> AssureDestroy() {
+            var assure = await DialogHost.Show(new ConfirmDialog("确定退出?")) as bool?;
+            return assure == true;
+        }
+
         public void OnActive(object param = null) {
             Console.WriteLine("Active");
         }

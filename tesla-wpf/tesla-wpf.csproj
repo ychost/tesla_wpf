@@ -75,6 +75,14 @@
     <Reference Include="Kent.Boogaart.HelperTrinity, Version=1.5.2.0, Culture=neutral, PublicKeyToken=cc96fa93a217f7a1, processorArchitecture=MSIL">
       <HintPath>..\packages\Kent.Boogaart.HelperTrinity.1.5.2\lib\net45\Kent.Boogaart.HelperTrinity.dll</HintPath>
     </Reference>
+    <Reference Include="Markdig, Version=0.15.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Vera.Wpf.Lib\Markdig.Wpf\bin\Debug\Markdig.dll</HintPath>
+    </Reference>
+    <Reference Include="Markdig.Wpf, Version=0.2.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Vera.Wpf.Lib\Markdig.Wpf\bin\Debug\Markdig.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="MaterialDesignColors, Version=1.0.0.14576, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignColors.1.1.1\lib\net45\MaterialDesignColors.dll</HintPath>
     </Reference>
@@ -225,6 +233,9 @@
     <Compile Include="Route\ViewModel\HomeViewModel.cs" />
     <Compile Include="Route\ViewModel\MainWindowViewModel.cs" />
     <Compile Include="Route\ViewModel\TypingGameViewModel.cs" />
+    <Compile Include="Route\View\GameDetailEdit.xaml.cs">
+      <DependentUpon>GameDetailEdit.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Route\View\GameTopDetail.xaml.cs">
       <DependentUpon>GameTopDetail.xaml</DependentUpon>
     </Compile>
@@ -244,6 +255,7 @@
       <DependentUpon>TestWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Toolkit\ConvertToolkit.cs" />
+    <Compile Include="Toolkit\MarkdownRenderHook.cs" />
     <Page Include="Component\AvatarList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -268,6 +280,10 @@
       <DependentUpon>LoginWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Route\View\GameDetailEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Route\View\GameTopDetail.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

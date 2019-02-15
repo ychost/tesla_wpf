@@ -14,7 +14,7 @@ namespace tesla_wpf.Model.Game {
     public class Game {
         public string Name { get; set; }
         public string Description { get; set; }
-        public string DetailContent { get; set; }
+        public string MarkdownContent { get; set; }
         public string CoverUrl { get; set; }
         public string OfficialWebsite;
         public string Remark;
@@ -28,7 +28,7 @@ namespace tesla_wpf.Model.Game {
             get {
                 try {
                     if (coverImage == null) {
-                        coverImage = AssetsHelper.FetchCloudImageAsync(CoverUrl);
+                        coverImage = AssetsHelper.FetchCloudImage(CoverUrl);
                     }
                 } catch (Exception e) {
                     return AssetsHelper.MountainImageSource;

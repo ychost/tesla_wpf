@@ -156,9 +156,15 @@ namespace tesla_wpf.Model {
     /// 也支持这些扩展的方法
     /// </summary>
     public interface IDynamicMenu : IMenu {
-        
+
     }
 
+    /// <summary>
+    /// 返回为 true 才关闭销毁菜单
+    /// </summary>
+    public interface IMenuAssureDestroy : IMenu {
+        Task<bool> AssureDestroy();
+    }
 
     /// <summary>
     /// 菜单被关闭，生命周期结束

@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using tesla_wpf.Model;
+using tesla_wpf.Model.Game;
 using tesla_wpf.Route.ViewModel;
 
 namespace tesla_wpf.Route.View {
@@ -21,12 +22,20 @@ namespace tesla_wpf.Route.View {
     /// </summary>
     public partial class GameTopDetail : UserControl, IDynamicMenu, IMenuInit {
         private string text;
-
+        private Game game;
         public GameTopDetail() {
         }
 
         public GameTopDetail(string content) : this() {
             this.text = content;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="game"></param>
+        public GameTopDetail(Game game) {
+            this.game = game;
         }
 
         public void OnInit(object param = null) {

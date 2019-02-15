@@ -122,6 +122,7 @@
                                              FixedHeaderCount="1"
                                              ItemsSource="{Binding TabItems}"
                                              SelectedValue="{Binding SelectedTab}"
+                                             ClosingItemCallback="{Binding ClosingTabCallback}"
                                              ShowDefaultCloseButton="True"
                                             x:Name="TabControl">
 

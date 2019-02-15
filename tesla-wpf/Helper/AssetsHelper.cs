@@ -65,7 +65,7 @@ namespace tesla_wpf.Helper {
         /// </summary>
         /// <param name="cloudKey">Cos 里面的 key</param>
         /// <returns></returns>
-        public static ImageSource FetchCloudImageAsync(string cloudKey) {
+        public static ImageSource FetchCloudImage(string cloudKey) {
             var url = "https://tesla-1252572735.cos.ap-chengdu.myqcloud.com" + cloudKey;
             var stream = FileCacheHelper.Hit(url);
             return LoadImageStream(stream);

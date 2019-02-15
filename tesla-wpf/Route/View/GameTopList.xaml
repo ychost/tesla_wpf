@@ -45,6 +45,7 @@
                                               Description="{Binding Description}" Cover="{Binding CoverImage}"
                                               Title="{Binding Name}" Top3Users="{Binding Top3Users}"
                                               OnViewGameCmd="{Binding Data.ViewGameCmd,Source={StaticResource Proxy}}"
+                                              OnEditGameCmd="{Binding Data.EditGameCmd,Source={StaticResource Proxy}}"
                                                >
                             </component:GameTopListItem>
                             <Rectangle Fill="Transparent" Grid.Column="2" Width="{Binding ActualWidth,RelativeSource={RelativeSource AncestorType=UserControl},

@@ -20,6 +20,7 @@ using tesla_wpf.Rest;
 using tesla_wpf.Route.View;
 using tesla_wpf.Toolkit;
 using Vera.Wpf.Lib.Component;
+using Vera.Wpf.Lib.Extensions;
 using Vera.Wpf.Lib.Helper;
 using Vera.Wpf.Lib.Mvvm;
 
@@ -103,6 +104,26 @@ namespace tesla_wpf.Route.ViewModel {
         public TabItem SelectedTab {
             get => GetProperty<TabItem>(); set => setTab(value);
         }
+
+        public ItemActionCallback ClosingTabCallback => new ItemActionCallback(async arg => {
+            // 由于 cancel 只支持同步
+            // 所以这里通过手工从集合移除的方式
+            // 取消库里面的移除方法
+            arg.Cancel();
+            var tab = arg.DragablzItem.Content as TabItem;
+            if (tab == null) {
+                return;
+            }
+            if (tab.Content is IMenuAssureDestroy assure) {
+                if (await assure.AssureDestroy() == false) {
+                    return;
+                }
+            }
+            Application.Current.Dispatcher.Invoke(() => {
+                TabItems.Remove(tab);
+            });
+
+        });
 
         /// <summary>
         /// 设置 Tab
@@ -209,28 +230,28 @@ namespace tesla_wpf.Route.ViewModel {
             }
         }
 
-
         /// <summary>
         /// 派遣 Tab 的一些 Add,Remove 等事件
         /// </summary>
         /// <param name="s"></param>
         /// <param name="e"></param>
-        void disptachTabEvent(object s, NotifyCollectionChangedEventArgs e) {
+        async void disptachTabEvent(object s, NotifyCollectionChangedEventArgs e) {
             if (e.Action == NotifyCollectionChangedAction.Remove) {
                 // 这里必须要等到 UI 更新了之后 SelectedTab 才会刷新
-                App.Current.Dispatcher.BeginInvoke(new Action(() => {
-                    destroyMenuContent(e.OldItems[0] as TabItem);
+                var tab = e.OldItems[0] as TabItem;
+                await Application.Current.Dispatcher.BeginInvoke(new Action(() => {
+                    var (menu, _) = MenuItem.GetMenu(MenuItems, tab.BindMenuId, null);
+                    if (menu == null) {
+                        return;
+                    }
+                    destroyMenuContent(menu);
                 }), System.Windows.Threading.DispatcherPriority.Loaded);
             }
         }
         /// <summary>
         /// 当某个 Tab 被销毁了之后，跟着销毁对应菜单的 Content
         /// </summary>
-        void destroyMenuContent(TabItem tab) {
-            var (menu, _) = MenuItem.GetMenu(MenuItems, tab.BindMenuId, null);
-            if (menu == null) {
-                return;
-            }
+        void destroyMenuContent(MenuItem menu) {
             // 复位标记
             (menu.Content as System.Windows.Controls.UserControl).Tag = false;
             // 销毁视图
