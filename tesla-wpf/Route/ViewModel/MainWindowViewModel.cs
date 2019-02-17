@@ -217,7 +217,7 @@ namespace tesla_wpf.Route.ViewModel {
                     MenuItems = ConvertToolkit.ConvertMenus(settings.Menus);
                     Application.Current.Dispatcher.Invoke(() => {
                         TabItems.CollectionChanged += disptachTabEvent;
-                        setSelectedMenu(MenuItems[0]);
+                        setSelectedMenu(MenuItems[1]);
                     });
                 } else {
                     await Application.Current.Dispatcher.Invoke(async () => {
@@ -259,8 +259,6 @@ namespace tesla_wpf.Route.ViewModel {
             //回收垃圾
             GC.Collect();
         }
-
-
 
         protected override void InitDesignData() {
             MenuItems = new ObservableCollection<MenuItem> {

@@ -6,9 +6,57 @@
              xmlns:local="clr-namespace:tesla_wpf.Route.View"
              xmlns:component="clr-namespace:Vera.Wpf.Lib.Component;assembly=Vera.Wpf.Lib"
              mc:Ignorable="d" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:toolkit="clr-namespace:Vera.Wpf.Lib.Mvvm;assembly=Vera.Wpf.Lib"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <toolkit:BindingProxy x:Key="Proxy" Data="{Binding}" />
+    </UserControl.Resources>
     <Grid>
-        <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <DataGrid
+                Visibility="Collapsed"
+                x:Name="RankDataGrid"
+                Margin="0 15 0 0"
+                AutoGenerateColumns="False"
+                ItemsSource="{Binding RankTypes}"
+                CanUserSortColumns="True"
+                CanUserAddRows="False"
+                materialDesign:DataGridAssist.EnableEditBoxAssist="True"
+                CanUserDeleteRows="False"
+                ScrollViewer.VerticalScrollBarVisibility="Visible"
+                IsReadOnly="True"
+                materialDesign:DataGridAssist.ColumnHeaderPadding="8">
+            <DataGrid.ContextMenu>
+                <ContextMenu DataContext="{Binding PlacementTarget.SelectedItem,  RelativeSource={RelativeSource Self}}">
+                    <MenuItem Command="{Binding Source={StaticResource Proxy},  Path=Data.AddRankType}"     Header="添加" />
+                    <MenuItem Command="{Binding Source={StaticResource Proxy},  Path=Data.EditRankType}"   CommandParameter="{Binding}"  Header="编辑" />
+                    <Separator />
+                    <MenuItem  Command="{Binding Source={StaticResource Proxy}, Path=Data.DelRankType}" CommandParameter="{Binding}" Header="删除" Foreground="Red" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+            <DataGrid.Columns>
+                <materialDesign:MaterialDataGridTextColumn Binding="{Binding Index}"
+                                                               Header="序号"
+                                                               IsReadOnly="true" />
+
+                <materialDesign:MaterialDataGridTextColumn Binding="{Binding Name,UpdateSourceTrigger=PropertyChanged}"
+                                                               Header="名称"
+                                                               IsReadOnly="True" />
+
+                <materialDesign:MaterialDataGridTextColumn Binding="{Binding Description,UpdateSourceTrigger=PropertyChanged}"
+                                                               Header="描述" />
+
+                <materialDesign:MaterialDataGridTextColumn Binding="{Binding RankMethodStr,UpdateSourceTrigger=PropertyChanged}"
+                                                               Header="排序方式" />
+
+                <materialDesign:MaterialDataGridTextColumn Binding="{Binding Remark,UpdateSourceTrigger=PropertyChanged}"
+                                                               Header="备注" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <Grid x:Name="MdGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="6"/>
@@ -24,5 +72,18 @@
                               />
             <component:MarkdownPreview x:Name="MdPreview" Grid.Column="2"/>
         </Grid>
+        <materialDesign:PopupBox Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}"
+                                 HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                 Grid.Row="0"
+                                 Margin="32">
+            <StackPanel>
+                <Button ToolTip="编辑排行" Click="EditRank_Click">
+                    <materialDesign:PackIcon Kind="PlaylistEdit" Height="20" Width="20" />
+                </Button>
+                <Button ToolTip="编辑描述" Click="EditMdContent_Click">
+                    <materialDesign:PackIcon Kind="TooltipEdit" Height="20" Width="20" />
+                </Button>
+            </StackPanel>
+        </materialDesign:PopupBox>
     </Grid>
 </UserControl>

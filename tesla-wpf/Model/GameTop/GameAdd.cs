@@ -21,7 +21,7 @@ namespace tesla_wpf.Model.GameTop {
         /// 描述
         /// </summary>
         [Edit(ItemName = "描述", ItemIcon = PackIconKind.Details, ItemType = EditItemType.Input, Order = 3)]
-        [StringLength(maximumLength: 2048, ErrorMessage = "长度不能超过 2048")]
+        [StringLength(maximumLength:512, ErrorMessage = "长度不能超过 512")]
         public string Description { get; set; }
 
         /// <summary>

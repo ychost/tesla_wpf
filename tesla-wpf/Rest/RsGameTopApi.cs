@@ -25,5 +25,29 @@ namespace tesla_wpf.Rest {
 
         [Get("/tesla-cassette/rank/game/list")]
         Task<Rest<List<Game>>> FetchGames();
+
+        /// <summary>
+        /// 更新游戏内容
+        /// </summary>
+        /// <param name="game"></param>
+        /// <returns></returns>
+        [Post("/tesla-cassette/rank/game/info/update")]
+        Task<Rest<bool>> UpdateGameInfo(Game game);
+
+        /// <summary>
+        /// 获取排行简介列表
+        /// </summary>
+        /// <param name="gameName"></param>
+        /// <returns></returns>
+        [Get("/tesla-cassette/rank/type/list")]
+        Task<Rest<List<RankType>>> FetchRankTypes(string gameName);
+
+        /// <summary>
+        /// 添加一个排行
+        /// </summary>
+        /// <param name="rankType"></param>
+        /// <returns></returns>
+        [Post("/tesla-cassette/rank/type/add")]
+        Task<Rest<bool>> AddRankType(RankType rankType);
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using Newtonsoft.Json;
 using tesla_wpf.Helper;
 using tesla_wpf.Model.Setting;
 
@@ -21,9 +22,10 @@ namespace tesla_wpf.Model.Game {
         /// <summary>
         /// 排行前三的用户
         /// </summary>
+        [JsonIgnore]
         public List<User> Top3Users { get; set; }
-
         private ImageSource coverImage;
+        [JsonIgnore]
         public ImageSource CoverImage {
             get {
                 try {

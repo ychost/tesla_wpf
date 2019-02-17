@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Refit;
+using tesla_wpf.Model.Game;
 
 namespace tesla_wpf.Rest {
     /// <summary>
@@ -24,4 +25,6 @@ namespace tesla_wpf.Rest {
         [Post("/tesla-system/cloud/image/upload")]
         Task<Rest<string>> UploadImage([AliasAs("image")]StreamPart stream);
     }
+
+   
 }

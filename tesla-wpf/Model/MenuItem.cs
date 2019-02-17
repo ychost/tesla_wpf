@@ -180,6 +180,10 @@ namespace tesla_wpf.Model {
     /// Tab 页面被激活
     /// </summary>
     public interface IMenuActive : IMenu {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="param"></param>
         void OnActive(object param = null);
     }
 
