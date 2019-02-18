@@ -16,10 +16,74 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <DataGrid
-                Visibility="Collapsed"
+        <Grid x:Name="DetailGrid" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Margin="0,20,0,0" DataContext="{Binding Game}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="30" />
+                    <ColumnDefinition Width="1.5*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <!--官网-->
+                <materialDesign:PackIcon Grid.Row="0" Grid.Column="0" Kind="Web" VerticalAlignment="Bottom" Foreground="{Binding BorderBrush,ElementName=WebsiteTextBox}" />
+                <TextBox x:Name="WebsiteTextBox" materialDesign:HintAssist.Hint="官网" TextWrapping="Wrap" materialDesign:HintAssist.IsFloating="True" 
+                         Grid.Row="0" Grid.Column="1" Text="{Binding Path=OfficialWebsite,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}"/>
+
+                <!--描述-->
+                <materialDesign:PackIcon  Grid.Row="0" Grid.Column="2" Kind="Details" VerticalAlignment="Bottom" Foreground="{Binding BorderBrush,ElementName=DescriptionTextBox}"/>
+                <TextBox x:Name="DescriptionTextBox" materialDesign:HintAssist.Hint="描述" Grid.Row="0" Grid.Column="3" TextWrapping="Wrap" materialDesign:HintAssist.IsFloating="True" 
+                         Text="{Binding Path=Description,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}"/>
+
+                <!--封面-->
+                <materialDesign:PackIcon Grid.Row="1" Grid.Column="0" Kind="Image" VerticalAlignment="Bottom" Foreground="{Binding BorderBrush,ElementName=CoverTextBox}"/>
+                <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="45"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="CoverTextBox"
+                               IsEnabled="False"
+                             materialDesign:HintAssist.Hint="封面" Grid.Column="0" TextWrapping="Wrap" materialDesign:HintAssist.IsFloating="True" 
+                         Text="{Binding Path=CoverUrl,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}"/>
+                    <Button  
+                          Grid.Column="1"
+                          Click="ChooseCover_Click"
+                          Height="30"
+                          Content="{materialDesign:PackIcon DotsHorizontal}"
+                          Style="{StaticResource MaterialDesignRaisedButton}" ToolTip="选择封面">
+                    </Button>
+                </Grid>
+
+                <!--备注-->
+                <materialDesign:PackIcon Grid.Row="2" Grid.Column="0" Kind="Note" VerticalAlignment="Bottom" Foreground="{Binding BorderBrush,ElementName=RemarkTextBox}"/>
+                <Grid Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="RemarkTextBox" materialDesign:HintAssist.Hint="备注"  Grid.Column="0" TextWrapping="Wrap" materialDesign:HintAssist.IsFloating="True" 
+                         Text="{Binding Path=Remark,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}"/>
+                        <Button Style="{StaticResource MaterialDesignRaisedButton}" HorizontalAlignment="Right"
+                            Command="{Binding Data.UpdateGameInfoCmd,Source={StaticResource Proxy}}"
+                                Width="100" Grid.Column="1" ToolTip="提交更新" Content="提交"/>
+
+                    </Grid>
+                </Grid>
+            </Grid>
+            <DataGrid
+                Grid.Row="1"
                 x:Name="RankDataGrid"
-                Margin="0 15 0 0"
+                Margin="0 20 0 0"
                 AutoGenerateColumns="False"
                 ItemsSource="{Binding RankTypes}"
                 CanUserSortColumns="True"
@@ -29,34 +93,35 @@
                 ScrollViewer.VerticalScrollBarVisibility="Visible"
                 IsReadOnly="True"
                 materialDesign:DataGridAssist.ColumnHeaderPadding="8">
-            <DataGrid.ContextMenu>
-                <ContextMenu DataContext="{Binding PlacementTarget.SelectedItem,  RelativeSource={RelativeSource Self}}">
-                    <MenuItem Command="{Binding Source={StaticResource Proxy},  Path=Data.AddRankType}"     Header="添加" />
-                    <MenuItem Command="{Binding Source={StaticResource Proxy},  Path=Data.EditRankType}"   CommandParameter="{Binding}"  Header="编辑" />
-                    <Separator />
-                    <MenuItem  Command="{Binding Source={StaticResource Proxy}, Path=Data.DelRankType}" CommandParameter="{Binding}" Header="删除" Foreground="Red" />
-                </ContextMenu>
-            </DataGrid.ContextMenu>
-            <DataGrid.Columns>
-                <materialDesign:MaterialDataGridTextColumn Binding="{Binding Index}"
+                <DataGrid.ContextMenu>
+                    <ContextMenu DataContext="{Binding PlacementTarget.SelectedItem,  RelativeSource={RelativeSource Self}}">
+                        <MenuItem Command="{Binding Source={StaticResource Proxy},  Path=Data.AddRankType}"     Header="添加" />
+                        <MenuItem Command="{Binding Source={StaticResource Proxy},  Path=Data.EditRankType}"   CommandParameter="{Binding}"  Header="编辑" />
+                        <Separator />
+                        <MenuItem  Command="{Binding Source={StaticResource Proxy}, Path=Data.DelRankType}" CommandParameter="{Binding}" Header="删除" Foreground="Red" />
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
+                <DataGrid.Columns>
+                    <materialDesign:MaterialDataGridTextColumn Binding="{Binding Index}"
                                                                Header="序号"
                                                                IsReadOnly="true" />
 
-                <materialDesign:MaterialDataGridTextColumn Binding="{Binding Name,UpdateSourceTrigger=PropertyChanged}"
+                    <materialDesign:MaterialDataGridTextColumn Binding="{Binding Name,UpdateSourceTrigger=PropertyChanged}"
                                                                Header="名称"
                                                                IsReadOnly="True" />
 
-                <materialDesign:MaterialDataGridTextColumn Binding="{Binding Description,UpdateSourceTrigger=PropertyChanged}"
+                    <materialDesign:MaterialDataGridTextColumn Binding="{Binding Description,UpdateSourceTrigger=PropertyChanged}"
                                                                Header="描述" />
 
-                <materialDesign:MaterialDataGridTextColumn Binding="{Binding RankMethodStr,UpdateSourceTrigger=PropertyChanged}"
+                    <materialDesign:MaterialDataGridTextColumn Binding="{Binding RankMethodStr,UpdateSourceTrigger=PropertyChanged}"
                                                                Header="排序方式" />
 
-                <materialDesign:MaterialDataGridTextColumn Binding="{Binding Remark,UpdateSourceTrigger=PropertyChanged}"
+                    <materialDesign:MaterialDataGridTextColumn Binding="{Binding Remark,UpdateSourceTrigger=PropertyChanged}"
                                                                Header="备注" />
-            </DataGrid.Columns>
-        </DataGrid>
-        <Grid x:Name="MdGrid">
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+        <Grid x:Name="MdGrid" Visibility="Collapsed">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="6"/>
@@ -77,7 +142,7 @@
                                  Grid.Row="0"
                                  Margin="32">
             <StackPanel>
-                <Button ToolTip="编辑排行" Click="EditRank_Click">
+                <Button ToolTip="编辑内容" Click="EditDetail_Click">
                     <materialDesign:PackIcon Kind="PlaylistEdit" Height="20" Width="20" />
                 </Button>
                 <Button ToolTip="编辑描述" Click="EditMdContent_Click">

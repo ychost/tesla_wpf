@@ -21,6 +21,7 @@ using Markdig.Wpf;
 using Markdig.Wpf.Extensions;
 using MaterialDesignThemes.Wpf;
 using tesla_wpf.Extensions;
+using tesla_wpf.Helper;
 using tesla_wpf.Model;
 using tesla_wpf.Model.Game;
 using tesla_wpf.Model.GameTop;
@@ -29,6 +30,7 @@ using Vera.Wpf.Lib.Component;
 using Vera.Wpf.Lib.Extensions;
 using Vera.Wpf.Lib.Helper;
 using Vera.Wpf.Lib.Mvvm;
+using Vera.Wpf.Lib.Toolkit;
 
 namespace tesla_wpf.Route.View {
     /// <summary>
@@ -39,16 +41,15 @@ namespace tesla_wpf.Route.View {
         /// <summary>
         ///  当前编辑的游戏数据
         /// </summary>
-        private Game game;
+        public Game Game { get; set; }
 
         /// <summary>
         /// 注入初始化数据
         /// </summary>
-        /// <param name="game"></param>
+        /// <param name="Game"></param>
         public GameDetailEdit(Game game) {
             InitializeComponent();
-            this.game = game;
-            MarkdownViewer.SetRenderHook(new RenderHook());
+            Game = game;
             DataContext = this;
         }
 
@@ -70,6 +71,9 @@ namespace tesla_wpf.Route.View {
         public ICommand EditRankType => new MdCommand(editRankTypeExec);
         public ICommand DelRankType => new MdCommand(delRankTypeExec);
         public ICommand AddRankType => new MdCommand(addRankTypeExec);
+        public ICommand UpdateGameInfoCmd => new MdCommand(updateGameInfoExec, canUpdateGameInfo);
+
+
 
         /// <summary>
         /// 添加排行
@@ -88,7 +92,7 @@ namespace tesla_wpf.Route.View {
                 return;
             }
             DialogHostExtension.ShowInMainThread(new LoadingDialog(Visibility.Visible, "正在上传中..."));
-            rankType.GameName = game.Name;
+            rankType.GameName = Game.Name;
             var rest = await HttpRestService.ForAuthApi<RsGameTopApi>().AddRankType(rankType);
             if (HttpRestService.ForData(rest, out var rs)) {
                 refreshRankTypes();
@@ -147,8 +151,8 @@ namespace tesla_wpf.Route.View {
         /// </summary>
         /// <param name="param"></param>
         public void OnInit(object param = null) {
-            MdPreview.MdText = game.MarkdownContent;
-            MdEditor.SetContent(game.MarkdownContent);
+            MdPreview.MdText = Game.MarkdownContent;
+            MdEditor.SetContent(Game.MarkdownContent);
             // 绑定事件
             // 上传 Markdown 图片到服务器
             MdEditor.UploadImageAction = UploadImage;
@@ -166,7 +170,7 @@ namespace tesla_wpf.Route.View {
         /// </summary>
         private async void refreshRankTypes() {
             // 拉取排行数据
-            var rest = await HttpRestService.ForAuthApi<RsGameTopApi>().FetchRankTypes(game.Name);
+            var rest = await HttpRestService.ForAuthApi<RsGameTopApi>().FetchRankTypes(Game.Name);
             if (HttpRestService.ForData(rest, out var rankTypes)) {
                 for (int i = 0; i < rankTypes.Count; i++) {
                     rankTypes[i].Index = i + 1;
@@ -201,10 +205,10 @@ namespace tesla_wpf.Route.View {
         /// </summary>
         /// <param name="markdownContent"></param>
         async Task<bool> UpdateGameInfo(string markdownContent) {
-            game.MarkdownContent = markdownContent;
+            Game.MarkdownContent = markdownContent;
             DialogHost.Show(new LoadingDialog(Visibility.Visible, "正在保存..."));
             try {
-                var rest = await HttpRestService.ForAuthApi<RsGameTopApi>().UpdateGameInfo(game);
+                var rest = await HttpRestService.ForAuthApi<RsGameTopApi>().UpdateGameInfo(Game);
                 await Task.Delay(400);
                 var res = rest.Code == HttpRestcode.Success;
                 var message = res == true ? "保存成功！" : "保存到服务器失败, 请检查网络连接";
@@ -218,7 +222,7 @@ namespace tesla_wpf.Route.View {
                     }
                 });
                 return res;
-            } catch(Exception e) {
+            } catch (Exception e) {
                 return false;
             }
         }
@@ -234,9 +238,9 @@ namespace tesla_wpf.Route.View {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void EditRank_Click(object sender, RoutedEventArgs e) {
+        private void EditDetail_Click(object sender, RoutedEventArgs e) {
             MdGrid.Visibility = Visibility.Collapsed;
-            RankDataGrid.Visibility = Visibility.Visible;
+            DetailGrid.Visibility = Visibility.Visible;
         }
 
         /// <summary>
@@ -245,32 +249,96 @@ namespace tesla_wpf.Route.View {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void EditMdContent_Click(object sender, RoutedEventArgs e) {
-            RankDataGrid.Visibility = Visibility.Collapsed;
+            DetailGrid.Visibility = Visibility.Collapsed;
             MdGrid.Visibility = Visibility.Visible;
         }
-    }
 
-    /// <summary>
-    /// 扩展 Markdown 渲染属性
-    /// <date>2019-2-15</date>
-    /// </summary>
-    internal class RenderHook : IWpfRenderHook {
-        public Image RenderImage(string url) {
-            url = "https://tesla-1252572735.cos.ap-chengdu.myqcloud.com" + url;
-            // 后面的都是本地解析的属性数据
-            url = url.Split('?')[0];
+        /// <summary>
+        /// 选择封面
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ChooseCover_Click(object sender, RoutedEventArgs e) {
+            System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
+            dialog.Filter = AssetsHelper.ImageFileter;
+            dialog.Title = "选择封面";
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                RestProxy.Builder().Try(() => Task.Run(async () => {
+                    var file = File.OpenRead(dialog.FileName);
+                    var rest = await HttpRestService.ForAuthApi<RsSystemApi>()
+                        .UploadImage(new Refit.StreamPart(file, System.IO.Path.GetFileName(dialog.FileName), "image/jepg"));
+                    if (!HttpRestService.ForData(rest, out var url)) {
+                        throw new Exception(rest.Message);
+                    }
+                    Game.CoverUrl = url;
+                }))
+                .Catch(typeof(Exception))
+                .LoadingMessage("正在上传封面...")
+                .SuccessMessage("上传封面成功")
+                .FailedMessage("上传封面失败")
+                .Build()
+                .Exec();
+            }
+        }
+
+        /// <summary>
+        /// 校验游戏字段
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <returns></returns>
+        private bool canUpdateGameInfo(object arg) {
             try {
-                using (var stream = FileCacheHelper.Hit(url)) {
-                    var source = new BitmapImage();
-                    source.BeginInit();
-                    source.StreamSource = stream;
-                    source.CacheOption = BitmapCacheOption.OnLoad;
-                    source.EndInit();
-                    source.Freeze();
-                    return new Image() { Source = source };
+                BaseDataErrorInfo.AssertAttrIsValid(Game);
+            } catch {
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 更新游戏内容
+        /// </summary>
+        /// <param name="obj"></param>
+        private void updateGameInfoExec(object obj) {
+            RestProxy.Builder().Try(() =>
+               Task.Run(async () => {
+                   var rest = await HttpRestService.ForAuthApi<RsGameTopApi>().UpdateGameInfo(Game);
+                   if (!(HttpRestService.ForData(rest, out var rs) && rs)) {
+                       throw new Exception(rest.Message);
+                   }
+               }))
+             .Catch(typeof(Exception))
+            .LoadingMessage("正在上传中...")
+            .SuccessMessage("更新成功")
+            .FailedMessage("更新失败")
+            .Build()
+            .Exec();
+        }
+
+        /// <summary>
+        /// 扩展 Markdown 渲染属性
+        /// <date>2019-2-15</date>
+        /// </summary>
+        internal class RenderHook : IWpfRenderHook {
+            public Image RenderImage(string url) {
+                if (url.StartsWith("/images/")) {
+                    url = "https://tesla-1252572735.cos.ap-chengdu.myqcloud.com" + url;
                 }
-            } catch (Exception e) {
-                return new Image();
+                // 后面的都是本地解析的属性数据
+                url = url.Split('?')[0];
+                try {
+                    using (var stream = FileCacheHelper.Hit(url)) {
+                        var source = new BitmapImage();
+                        source.BeginInit();
+                        source.StreamSource = stream;
+                        source.CacheOption = BitmapCacheOption.OnLoad;
+                        source.EndInit();
+                        source.Freeze();
+                        return new Image() { Source = source };
+                    }
+                } catch (Exception e) {
+                    return new Image();
+                }
             }
         }
     }

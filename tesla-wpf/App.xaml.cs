@@ -8,9 +8,11 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
+using Markdig.Wpf;
 using tesla_wpf.Model.Setting;
 using Vera.Wpf.Lib.Helper;
 using YEvent;
+using static tesla_wpf.Route.View.GameDetailEdit;
 
 namespace tesla_wpf {
     /// <summary>
@@ -28,6 +30,7 @@ namespace tesla_wpf {
         /// <param name="e"></param>
         protected override void OnStartup(StartupEventArgs e) {
             base.OnStartup(e);
+            MarkdownViewer.SetRenderHook(new RenderHook());
             SqliteHelper.Init(Path.GetFullPath("./tesla.db"));
             FileCacheHelper.AppCacheDirectory = string.Format("{0}\\{1}\\Cache\\",
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),

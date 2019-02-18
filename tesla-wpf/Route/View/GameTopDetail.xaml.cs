@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,15 +22,7 @@ namespace tesla_wpf.Route.View {
     /// GameTopDetail.xaml 的交互逻辑
     /// </summary>
     public partial class GameTopDetail : UserControl, IDynamicMenu, IMenuInit {
-        private string text;
         private Game game;
-        public GameTopDetail() {
-        }
-
-        public GameTopDetail(string content) : this() {
-            this.text = content;
-        }
-
         /// <summary>
         /// 
         /// </summary>
@@ -40,7 +33,21 @@ namespace tesla_wpf.Route.View {
 
         public void OnInit(object param = null) {
             InitializeComponent();
-            this.DataContext = new GameTopDetailViewModel(text);
+            this.DataContext = new GameTopDetailViewModel(game);
+        }
+
+
+        /// <summary>
+        /// 按住 Control 按钮可以打开官网
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BrowserNav_Click(object sender, MouseButtonEventArgs e) {
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) {
+                var tb = sender as TextBlock;
+                Process.Start(new ProcessStartInfo(new Uri(tb.Text).AbsoluteUri));
+            }
+            e.Handled = true;
         }
     }
 }

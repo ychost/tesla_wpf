@@ -26,6 +26,11 @@ namespace tesla_wpf.Helper {
         public static ImageSource UserImaggeSource = new BitmapImage(GetAssets("user.png"));
 
         /// <summary>
+        /// 图片筛选器
+        /// </summary>
+        public static string ImageFileter = "(*.jpg*.png*.jpeg)|*.jpg;*.png;*.jpeg";
+
+        /// <summary>
         /// 默认的 not found oops!
         /// </summary>
         public static ImageSource OopsImageSource = new BitmapImage(GetAssets("oops.png"));

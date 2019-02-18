@@ -14,14 +14,14 @@ namespace tesla_wpf.Model.GameTop {
         /// 游戏名
         /// </summary>
         [Edit(ItemName = "名称", ItemIcon = PackIconKind.Gamepad, Order = 1)]
-        [StringLength(maximumLength: 50, MinimumLength = 1, ErrorMessage = "名称长度为 [1-50]")]
+        [Required,StringLength(maximumLength: 50, MinimumLength = 1, ErrorMessage = "名称长度为 [1-50]")]
         public string Name { get; set; }
 
         /// <summary>
         /// 描述
         /// </summary>
         [Edit(ItemName = "描述", ItemIcon = PackIconKind.Details, ItemType = EditItemType.Input, Order = 3)]
-        [StringLength(maximumLength:512, ErrorMessage = "长度不能超过 512")]
+        [Required,StringLength(maximumLength:512, ErrorMessage = "长度不能超过 512")]
         public string Description { get; set; }
 
         /// <summary>
