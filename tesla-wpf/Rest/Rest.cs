@@ -1,9 +1,12 @@
 ﻿
 
+using System;
+
 namespace tesla_wpf.Rest {
     /// <summary>
-    /// Rest模型
+    /// 引用类型的 Rest
     /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class Rest<T> {
         public T Data { get; set; }
         public int Code { get; set; }

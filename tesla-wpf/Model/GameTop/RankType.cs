@@ -46,20 +46,22 @@ namespace tesla_wpf.Model.GameTop {
         /// 排行方法
         /// </summary>
         [Edit(ItemName = "方式", ItemType = EditItemType.Combobox, ItemIcon = PackIconKind.Meteor)]
-        [Required]
         public int RankMethod {
             get => GetProperty(() => RankMethod); set {
                 SetProperty(() => RankMethod, value);
                 RankMethodStr = (from item in RankMethodItems where (int)item.Item == RankMethod select item.Name).FirstOrDefault() ?? "未知";
             }
         }
+
+        /// <summary>
+        /// 辅助字段, 给 UI 用
+        /// </summary>
+        public bool IsChecked { get => GetProperty<bool>(); set => SetProperty(value); }
+
         /// <summary>
         /// RankMethod 的显示内容
         /// </summary>
         public string RankMethodStr { get => GetProperty(() => RankMethodStr); set => SetProperty(() => RankMethodStr, value); }
-
-
-
 
         public static List<EditComboboxItem> RankMethodItems;
         static RankType() {

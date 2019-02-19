@@ -84,12 +84,13 @@ namespace tesla_wpf.Route.ViewModel {
                     GameAdd.Name, GameAdd.Description, GameAdd.Remark, GameAdd.OfficialWebsite,
                      new Refit.StreamPart(coverStream, Path.GetFileName(GameAdd.CoverPath), "image/jpeg"));
                 if (HttpRestService.ForData(rest, out var data)) {
-                    if (!data) {
+                    if (data == true) {
+                        NotifyHelper.ShowSuccessMessage("上传成功!");
+                        // 添加成功重新赋值
+                        GameAdd = new GameAdd();
+                    } else {
                         throw new UploadException(rest.Message);
                     }
-                    NotifyHelper.ShowSuccessMessage("上传成功!");
-                    // 添加成功重新赋值
-                    GameAdd = new GameAdd();
                 }
             } catch (UploadException e) {
                 NotifyHelper.ShowErrorMessage(e.Message);

@@ -74,12 +74,9 @@ namespace tesla_wpf.Extensions {
                 data = rest.Data;
                 return true;
             }
-            NotifyHelper.ShowErrorMessage(rest.Message);
             data = default(T);
             return false;
         }
-
-
 
         /// <summary>
         /// 给一些非 200 的错误返回一些提示
@@ -129,6 +126,8 @@ namespace tesla_wpf.Extensions {
             }
             HttpRestService.LogOutHttpRquest(request);
             var response = await base.SendAsync(request, cancellationToken);
+            var str = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(str);
             return HttpRestService.HandleHttpIO(request, response);
         }
     }

@@ -16,7 +16,7 @@ namespace tesla_wpf.Rest {
         Task<Rest<RsUserSettings>> FetchUserSettings();
 
         [Get("/tesla-system/tool/token/valid/")]
-        Task<Rest<bool>> ValidToken([Header("Authorization")]  string authorization);
+        Task<Rest<bool?>> ValidToken([Header("Authorization")]  string authorization);
 
         [Post("/tesla-system/user/login?app=wpf")]
         Task<Rest<RsUser>> Login([Body] RsUserLogin userLogin);

@@ -7,12 +7,14 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:component="clr-namespace:Vera.Wpf.Lib.Component;assembly=Vera.Wpf.Lib"
              xmlns:viewmodel="clr-namespace:tesla_wpf.Route.ViewModel"
+             xmlns:toolkit="clr-namespace:Vera.Wpf.Lib.Mvvm;assembly=Vera.Wpf.Lib"
              mc:Ignorable="d" 
              x:Name="UserControl"
              d:DataContext="{Binding Source={StaticResource ViewModel}}"
              d:DesignHeight="1080" d:DesignWidth="1920">
     <UserControl.Resources>
         <viewmodel:GameTopDetailViewModel  x:Key="ViewModel"/>
+        <toolkit:BindingProxy x:Key="Proxy" Data="{Binding}" />
     </UserControl.Resources>
     <Grid >
         <Grid.ColumnDefinitions>
@@ -23,7 +25,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Grid.ColumnSpan="3" >
+        <Grid Grid.Row="0" Grid.ColumnSpan="3" Visibility="Collapsed" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -80,5 +82,70 @@
         <materialDesign:Card VerticalAlignment="Stretch" x:Name="Card" Grid.Row="1">
             <component:MarkdownPreview  x:Name="MarkdownPreview" MdText="{Binding MdText}"/>
         </materialDesign:Card>
+        <Grid Grid.Column="1" Grid.Row="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <materialDesign:ColorZone Mode="Inverted" Grid.Row="0">
+                    <ItemsControl ItemsSource="{Binding RankTypes}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <RadioButton
+                                Command="{Binding Data.SwitchRankTypeCmd ,Source={StaticResource Proxy}}" 
+                                CommandParameter="{Binding}"
+                                IsChecked="{Binding IsChecked}"
+                                Style="{StaticResource MaterialDesignTabRadioButton}" Margin="4"  Content="{Binding Name}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </materialDesign:ColorZone>
+                <ListView Grid.Row="1" ItemsSource="{Binding RankInfos}">
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="添加" Command="{Binding Data.AddRankInfoCmd,Source={StaticResource Proxy}}" />
+                            <Separator/>
+                            <MenuItem Header="删除" Foreground="Red" Command="{Binding Data.DelRankInfoCmd,Source={StaticResource Proxy}}"/>
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn DisplayMemberBinding="{Binding RanNo}" Header="名次" />
+                            <GridViewColumn DisplayMemberBinding="{Binding User}" Header="姓名" />
+                            <GridViewColumn Header="头像">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Ellipse Width="30">
+                                            <Ellipse.Fill>
+                                                <ImageBrush ImageSource="{Binding AvatarImage}" Stretch="Uniform" />
+                                            </Ellipse.Fill>
+                                        </Ellipse>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding GameScore}" Header="得分" />
+                            <GridViewColumn DisplayMemberBinding="{Binding UploadTime,StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" Header="上传时间" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <Button Style="{StaticResource MaterialDesignFloatingActionButton}"
+                Command="{Binding Path= AddRankInfoCmd}"
+                        VerticalAlignment="Bottom"
+                        Height="50"
+                        Width="50"
+                        HorizontalAlignment="Right"
+                        Grid.Row="1"
+                        Margin="0,0,40,40" RenderTransformOrigin="0.707,0.733">
+                    <materialDesign:PackIcon Kind="Plus" Height="30" Width="30" />
+                </Button>
+            </Grid>
+        </Grid>
     </Grid>
+
 </UserControl>

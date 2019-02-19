@@ -303,7 +303,7 @@ namespace tesla_wpf.Route.View {
             RestProxy.Builder().Try(() =>
                Task.Run(async () => {
                    var rest = await HttpRestService.ForAuthApi<RsGameTopApi>().UpdateGameInfo(Game);
-                   if (!(HttpRestService.ForData(rest, out var rs) && rs)) {
+                   if (!(HttpRestService.ForData(rest, out var rs) && rs.Value)) {
                        throw new Exception(rest.Message);
                    }
                }))

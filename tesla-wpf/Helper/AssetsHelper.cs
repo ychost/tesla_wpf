@@ -61,7 +61,12 @@ namespace tesla_wpf.Helper {
         /// <param name="bufferSize">读取图片开辟的缓存大小，默认 512K</param>
         /// <returns></returns>
         public static ImageSource FetchImage(string url) {
-            return LoadImage(new Uri(url, UriKind.Absolute));
+            if (url.StartsWith("http")) {
+            } else {
+                url = "https://tesla-1252572735.cos.ap-chengdu.myqcloud.com" + url;
+            }
+            var stream = FileCacheHelper.Hit(url);
+            return LoadImageStream(stream);
         }
 
         /// <summary>
