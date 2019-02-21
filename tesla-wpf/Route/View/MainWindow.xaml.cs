@@ -26,8 +26,8 @@ namespace tesla_wpf.Route.View {
     public partial class MainWindow : Window {
         public MainWindow() {
             var vm = new MainWindowViewModel();
-            DataContext = vm;
             InitializeComponent();
+            DataContext = vm;
             ShowInTaskbar = true;
             IntPtr hwnd = new System.Windows.Interop.WindowInteropHelper(this).Handle;
             int oldStyle = Win32Helper.GetWindowLong(hwnd, Win32Helper.GWL_STYLE);
@@ -81,6 +81,7 @@ namespace tesla_wpf.Route.View {
         /// <param name="e"></param>
         private void ExitLogin(object sender, RoutedEventArgs e) {
             var loginWindow = new LoginWindow(null);
+            NotifyIcon.Close();
             Application.Current.MainWindow = loginWindow;
             NotifyHelper.UpdateNotifierWindow();
             // 删除用户记录

@@ -65,7 +65,7 @@
         </Style>
     </Window.Resources>
     <Grid>
-        <component:NotifyIcon MouseDoubleClick="NotifyIcon_DbClick" Text="AistLab" Icon="Assets/fly.ico"  x:Name="NotifyIcon">
+        <component:NotifyIcon MouseDoubleClick="NotifyIcon_DbClick" Visibility="Collapsed" Text="AistLab" Icon="Assets/fly.ico"  x:Name="NotifyIcon">
             <component:NotifyIcon.MenuItems>
                 <forms:MenuItem Text="设置" Click="MenuSetting_Click"/>
                 <forms:MenuItem Text="退出" Click="MenuExit_Click"/>
@@ -128,7 +128,7 @@
             </Grid>
 
             <StackPanel
-                Visibility="{Binding NetworkIsOk,Converter={con:BooleanToVisibilityConverter IsReversed=True}}"
+                Visibility="{Binding IsLogining,Converter={con:BooleanToVisibilityConverter IsReversed=False}}"
             >
                 <ProgressBar Style="{DynamicResource MaterialDesignCircularProgressBar}"
                   IsIndeterminate="True" Width="70" 

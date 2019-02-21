@@ -86,19 +86,19 @@ namespace tesla_wpf.Extensions {
         public static HttpResponseMessage HandleHttpIO(HttpRequestMessage request, HttpResponseMessage response) {
             switch (response.StatusCode) {
                 case HttpStatusCode.Forbidden:
-                    NotifyHelper.ShowErrorMessage("操作禁止");
+                    //NotifyHelper.ShowErrorMessage("操作禁止");
                     break;
                 case HttpStatusCode.InternalServerError:
-                    NotifyHelper.ShowErrorMessage("系统错误");
+                    //NotifyHelper.ShowErrorMessage("系统错误");
                     break;
                 case HttpStatusCode.GatewayTimeout:
-                    NotifyHelper.ShowErrorMessage("网关超时，请稍后重试");
+                    //NotifyHelper.ShowErrorMessage("网关超时，请稍后重试");
                     break;
                 case HttpStatusCode.NotFound:
-                    NotifyHelper.ShowErrorMessage("请求资源不存在");
+                    //NotifyHelper.ShowErrorMessage("请求资源不存在");
                     break;
                 case HttpStatusCode code when (code != HttpStatusCode.OK):
-                    NotifyHelper.ShowErrorMessage($"请求错误：{response.StatusCode}");
+                    //NotifyHelper.ShowErrorMessage($"请求错误：{response.StatusCode}");
                     break;
             }
             return response;

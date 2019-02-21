@@ -116,14 +116,14 @@
                     </ListView.ContextMenu>
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn DisplayMemberBinding="{Binding RanNo}" Header="名次" />
+                            <GridViewColumn  Header="名次" DisplayMemberBinding="{Binding RanNo}"/>
                             <GridViewColumn DisplayMemberBinding="{Binding User}" Header="姓名" />
                             <GridViewColumn Header="头像">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Ellipse Width="30">
+                                        <Ellipse Width="28" Height="28" VerticalAlignment="Top">
                                             <Ellipse.Fill>
-                                                <ImageBrush ImageSource="{Binding AvatarImage}" Stretch="Uniform" />
+                                                <ImageBrush ImageSource="{Binding AvatarImage}"  Stretch="Uniform" />
                                             </Ellipse.Fill>
                                         </Ellipse>
                                     </DataTemplate>

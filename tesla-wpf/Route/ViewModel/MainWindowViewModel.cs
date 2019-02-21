@@ -180,7 +180,7 @@ namespace tesla_wpf.Route.ViewModel {
                 if (tabEvent.IsSwitchIt) {
                     SelectedTab = tab;
                 }
-            });
+            },true);
         }
 
 

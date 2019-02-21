@@ -16,6 +16,7 @@ using tesla_wpf.Route.View;
 using tesla_wpf.Toolkit;
 using Vera.Wpf.Lib.Helper;
 using Vera.Wpf.Lib.Mvvm;
+using YEvent;
 
 namespace tesla_wpf {
     /// <summary>
@@ -204,6 +205,7 @@ namespace tesla_wpf {
         /// 跳转到主窗体
         /// </summary>
         private void gotoMainWindow(User user) {
+            App.Store = YEventStore.create();
             App.User = user;
             // 关闭网络检查器
             // 这里不关后面可能还会运行，导致内存泄漏
@@ -211,8 +213,8 @@ namespace tesla_wpf {
             var window = new MainWindow();
             Application.Current.MainWindow = window;
             NotifyHelper.UpdateNotifierWindow();
-            window.Show();
             exit();
+            window.Show();
         }
 
         /// <summary>

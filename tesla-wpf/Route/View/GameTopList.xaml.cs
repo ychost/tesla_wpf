@@ -24,11 +24,7 @@ namespace tesla_wpf.Route.View {
     /// <summary>
     /// GameTopList.xaml 的交互逻辑
     /// </summary>
-    public partial class GameTopList : UserControl, IMenuInit, IMenuActive, IMenuInActive, IMenuDestroy, IMenuAssureDestroy {
-        public async Task<bool> AssureDestroy() {
-            var assure = await DialogHost.Show(new ConfirmDialog("确定退出?")) as bool?;
-            return assure == true;
-        }
+    public partial class GameTopList : UserControl, IMenuInit, IMenuActive, IMenuInActive, IMenuDestroy {
 
         public void OnActive(object param = null) {
             Console.WriteLine("Active");

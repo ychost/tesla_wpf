@@ -22,7 +22,7 @@ namespace tesla_wpf {
         /// <summary>
         /// 事件中心
         /// </summary>
-        public static YEventStore Store = new YEventStore();
+        public static YEventStore Store = YEventStore.create();
 
         /// <summary>
         /// 初始化数据库啥的
