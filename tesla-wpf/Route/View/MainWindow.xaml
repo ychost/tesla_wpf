@@ -28,6 +28,10 @@
         >
     <Window.Resources>
         <vm:MainWindowViewModel x:Key="ViewModel"/>
+        <ContextMenu x:Shared="false" x:Key="SysTrayMenu" >
+            <MenuItem Header="设置" Click="Setting_Click" />
+            <MenuItem Header="退出" Click="Close_Click" />
+        </ContextMenu>
     </Window.Resources>
 
     <materialDesign:DialogHost Visibility="Visible" Identifier="RootDialog">
@@ -86,14 +90,6 @@
                 </StackPanel>
             </materialDesign:DrawerHost.LeftDrawerContent>
             <Grid>
-                <component:NotifyIcon MouseDoubleClick="NotifyIcon_DbClick"  Text="AistLab"  x:Name="NotifyIcon" Icon="/tesla-wpf;component/Assets/fly.ico">
-                    <component:NotifyIcon.MenuItems>
-                        <forms:MenuItem Text="设置" Click="MenuSetting_Click"/>
-                        <forms:MenuItem Text="退出" Click="MenuExit_Click"/>
-                    </component:NotifyIcon.MenuItems>
-                </component:NotifyIcon>
-
-
                 <DockPanel>
                     <materialDesign:ColorZone Padding="16" materialDesign:ShadowAssist.ShadowDepth="Depth5"
                 MouseLeftButtonDown="DragWindow_LeftButton"

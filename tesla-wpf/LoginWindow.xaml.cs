@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Timers;
@@ -8,6 +9,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Hardcodet.Wpf.TaskbarNotification;
+using NLog;
 using tesla_wpf.Extensions;
 using tesla_wpf.Helper;
 using tesla_wpf.Model.Setting;
@@ -32,6 +35,7 @@ namespace tesla_wpf {
         /// 登录框绑定数据模型
         /// </summary>
         public RsUserLogin UserLogin { get; set; } = new RsUserLogin();
+        private readonly Logger logger = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// 登录命令
         /// </summary>
@@ -119,6 +123,7 @@ namespace tesla_wpf {
         /// 检查网络连接
         /// </summary>
         void initNetwork(Action action = null) {
+            initTaskbarIcon();
             NetworkMessage = string.Empty;
             NetworkIsOk = true;
             action?.Invoke();
@@ -169,25 +174,27 @@ namespace tesla_wpf {
         /// </summary>
         /// <param name="obj"></param>
         private async void loginExec(object obj) {
+            IsLogining = true;
             IntPtr p = System.Runtime.InteropServices.Marshal.SecureStringToBSTR(PasswordBox.SecurePassword);
             // 使用.NET内部算法把IntPtr指向处的字符集合转换成字符串  
             UserLogin.Password = System.Runtime.InteropServices.Marshal.PtrToStringBSTR(p);
             if (string.IsNullOrEmpty(UserLogin.Password)) {
                 NotifyHelper.ShowErrorMessage("密码不能为空");
+                IsLogining = false;
                 return;
             }
-            IsLogining = true;
             var client = HttpRestService.ForAnonymousApi<RsSystemApi>();
             try {
                 var rest = await client.Login(UserLogin);
-                if (HttpRestService.ForData(rest, out var msg)) {
-                    var user = ConvertToolkit.ConvertUser(rest.Data);
+                if (HttpRestService.ForData(rest, out var rsUser)) {
+                    var user = ConvertToolkit.ConvertUser(rsUser);
                     gotoMainWindow(user);
+                } else {
+                    NotifyHelper.ShowErrorMessage(rest.Message);
                 }
-            } catch {
-                Application.Current.Dispatcher.Invoke(() => {
-                    NotifyHelper.ShowErrorMessage("网络错误");
-                });
+            } catch (Exception e) {
+                logger.Error<Exception>("登录异常", e);
+                NotifyHelper.ShowErrorMessage("网络错误");
             }
             IsLogining = false;
         }
@@ -243,7 +250,6 @@ namespace tesla_wpf {
         private void Close_Click(object sender, RoutedEventArgs e) {
             exit();
         }
-
         /// <summary>
         /// 随着用户名的改变，如果出现历史用户则显示登录头像
         /// </summary>
@@ -258,7 +264,6 @@ namespace tesla_wpf {
                 Avatar = AssetsHelper.UserImaggeSource;
             }
         }
-
         /// <summary>
         /// 移动窗体
         /// </summary>
@@ -267,12 +272,10 @@ namespace tesla_wpf {
         private void Window_Move(object sender, MouseEventArgs e) {
             this.DragMove();
         }
-
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void onPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
         /// <summary>
         /// Enter 按键登录
         /// </summary>
@@ -287,17 +290,6 @@ namespace tesla_wpf {
                 }
             }
         }
-
-        /// <summary>
-        /// 双击通知栏图标，让窗体置顶
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void NotifyIcon_DbClick(object sender, MouseButtonEventArgs e) {
-            Topmost = false;
-            Topmost = true;
-            Topmost = false;
-        }
         /// <summary>
         /// 退出
         /// </summary>
@@ -306,24 +298,38 @@ namespace tesla_wpf {
         private void MenuExit_Click(object sender, EventArgs e) {
             exit();
         }
-
-        /// <summary>
-        /// 设置
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MenuSetting_Click(object sender, EventArgs e) {
-
-        }
-
         /// <summary>
         /// 
         /// </summary>
         private void exit() {
-            this.NotifyIcon.Close();
+            taskbar.Dispose();
             Close();
             GC.Collect();
             GC.WaitForFullGCApproach();
+        }
+        /// <summary>
+        /// 初始化右下角的托盘显示
+        /// </summary>
+        TaskbarIcon taskbar;
+        private void initTaskbarIcon() {
+            taskbar = new TaskbarIcon();
+            taskbar.Icon = new Icon(Application.GetResourceStream(AssetsHelper.GetAssets("fly.ico")).Stream);
+            taskbar.ContextMenu = (ContextMenu)FindResource("SysTrayMenu");
+            taskbar.DoubleClickCommand = new MdCommand(maximazeExec);
+        }
+        /// <summary>
+        /// 双击最大化
+        /// </summary>
+        /// <param name="obj"></param>
+        private void maximazeExec(object obj) {
+            WindowState = WindowState.Normal;
+            Topmost = false;
+            Topmost = true;
+            Topmost = false;
+        }
+
+        private void Setting_Click(object sender, RoutedEventArgs e) {
+            taskbar.ShowBalloonTip("提示", "设置功能正在开发中", BalloonIcon.Info);
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using NLog;
 using Refit;
 using tesla_wpf.Rest;
 using Vera.Wpf.Lib.Helper;
@@ -26,6 +27,8 @@ namespace tesla_wpf.Extensions {
         static readonly string apiUrl = "http://reg.sudoyc.com:1002";
         // 每次请求的最长时间
         static readonly TimeSpan RequestTimeout = TimeSpan.FromMinutes(5);
+
+        public static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// 需要注入 Token 认证的 api
@@ -83,33 +86,14 @@ namespace tesla_wpf.Extensions {
         /// </summary>
         /// <param name="response"></param>
         /// <returns></returns>
-        public static HttpResponseMessage HandleHttpIO(HttpRequestMessage request, HttpResponseMessage response) {
-            switch (response.StatusCode) {
-                case HttpStatusCode.Forbidden:
-                    //NotifyHelper.ShowErrorMessage("操作禁止");
-                    break;
-                case HttpStatusCode.InternalServerError:
-                    //NotifyHelper.ShowErrorMessage("系统错误");
-                    break;
-                case HttpStatusCode.GatewayTimeout:
-                    //NotifyHelper.ShowErrorMessage("网关超时，请稍后重试");
-                    break;
-                case HttpStatusCode.NotFound:
-                    //NotifyHelper.ShowErrorMessage("请求资源不存在");
-                    break;
-                case HttpStatusCode code when (code != HttpStatusCode.OK):
-                    //NotifyHelper.ShowErrorMessage($"请求错误：{response.StatusCode}");
-                    break;
+        public static async Task<HttpResponseMessage> HandleHttpIO(HttpRequestMessage request, HttpResponseMessage response) {
+            Logger.Trace("request url: " + request.RequestUri.ToString());
+            var res = await response.Content.ReadAsStringAsync();
+            Logger.Trace("response data: " + res);
+            if (response.StatusCode != HttpStatusCode.OK) {
+                Logger.Error("响应错误", JsonConvert.SerializeObject(response.Content));
             }
             return response;
-        }
-
-        /// <summary>
-        /// 打印请求日志
-        /// </summary>
-        /// <param name="request"></param>
-        public static void LogoutHttpRquest(HttpRequestMessage request) {
-            Console.WriteLine("url:" + request.RequestUri.ToString());
         }
     }
 
@@ -124,11 +108,9 @@ namespace tesla_wpf.Extensions {
                 var token = App.GetHttpToken();
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
-            HttpRestService.LogoutHttpRquest(request);
             var response = await base.SendAsync(request, cancellationToken);
-            var str = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(str);
-            return HttpRestService.HandleHttpIO(request, response);
+            var message = await HttpRestService.HandleHttpIO(request, response);
+            return message;
         }
     }
 
@@ -139,9 +121,9 @@ namespace tesla_wpf.Extensions {
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) {
             // 设置匿名请求的标记
             request.RequestUri = new Uri(request.RequestUri.ToString() + "&&_allow_anonymous=true");
-            HttpRestService.LogoutHttpRquest(request);
             var response = await base.SendAsync(request, cancellationToken);
-            return HttpRestService.HandleHttpIO(request, response);
+            var message = await HttpRestService.HandleHttpIO(request, response);
+            return message;
         }
     }
 

@@ -225,7 +225,6 @@
     <Compile Include="Extensions\HttpRestService.cs" />
     <Compile Include="Extensions\VisualTreeHelperExtensions.cs" />
     <Compile Include="Helper\AssetsHelper.cs" />
-    <Compile Include="Helper\Logger.cs" />
     <Compile Include="Helper\NetworkHelper.cs" />
     <Compile Include="Model\GameTop\Game.cs" />
     <Compile Include="Model\GameTop\GameAdd.cs" />
@@ -270,7 +269,6 @@
       <DependentUpon>TestWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Toolkit\ConvertToolkit.cs" />
-    <Compile Include="Toolkit\MarkdownRenderHook.cs" />
     <Page Include="Component\AvatarList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
+using Hardcodet.Wpf.TaskbarNotification;
 using Markdig.Wpf;
+using tesla_wpf.Helper;
 using tesla_wpf.Model.Setting;
 using Vera.Wpf.Lib.Helper;
 using YEvent;
@@ -24,7 +27,10 @@ namespace tesla_wpf {
         /// </summary>
         public static YEventStore Store = YEventStore.create();
 
-        public static NLog.Logger Logger;
+        /// <summary>
+        /// 日志工具，可输出到终端、文件、数据库，见 NLog.config
+        /// </summary>
+        public static NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// 初始化数据库啥的
@@ -37,8 +43,6 @@ namespace tesla_wpf {
             FileCacheHelper.AppCacheDirectory = string.Format("{0}\\{1}\\Cache\\",
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 Process.GetCurrentProcess().ProcessName);
-            Logger = NLog.LogManager.GetCurrentClassLogger();
-            //Logger.Fatal("发生致命错误");
         }
 
         /// </summary>
@@ -67,5 +71,6 @@ namespace tesla_wpf {
             return User.Token;
         }
 
+        
     }
 }

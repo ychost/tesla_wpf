@@ -21,7 +21,6 @@
         TextElement.FontSize="13"
         TextOptions.TextFormattingMode="Ideal" 
         TextOptions.TextRenderingMode="Auto"
-        AllowsTransparency="True"
         Background="Transparent"
         d:DataContext="{Binding Source={StaticResource ViewModel}}"
         xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
@@ -63,15 +62,12 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Cursor" Value="Hand"/>
         </Style>
+        <ContextMenu x:Shared="false" x:Key="SysTrayMenu" >
+            <MenuItem Header="设置" Click="Setting_Click" />
+            <MenuItem Header="退出" Click="Close_Click" />
+        </ContextMenu>
     </Window.Resources>
     <Grid>
-        <component:NotifyIcon MouseDoubleClick="NotifyIcon_DbClick" Visibility="Collapsed" Text="AistLab" Icon="Assets/fly.ico"  x:Name="NotifyIcon">
-            <component:NotifyIcon.MenuItems>
-                <forms:MenuItem Text="设置" Click="MenuSetting_Click"/>
-                <forms:MenuItem Text="退出" Click="MenuExit_Click"/>
-            </component:NotifyIcon.MenuItems>
-        </component:NotifyIcon>
-
         <Grid KeyDown="Detected_KeyDown"  MouseLeftButtonDown="Window_Move">
             <Grid IsEnabled="{Binding NetworkIsOk}">
                 <Rectangle Width="350" Height="500" x:Name="BackgroundRect" Fill="{DynamicResource MaterialDesignPaper}" RadiusX="5" RadiusY="5"/>
