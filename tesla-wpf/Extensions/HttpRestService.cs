@@ -108,7 +108,7 @@ namespace tesla_wpf.Extensions {
         /// 打印请求日志
         /// </summary>
         /// <param name="request"></param>
-        public static void LogOutHttpRquest(HttpRequestMessage request) {
+        public static void LogoutHttpRquest(HttpRequestMessage request) {
             Console.WriteLine("url:" + request.RequestUri.ToString());
         }
     }
@@ -124,7 +124,7 @@ namespace tesla_wpf.Extensions {
                 var token = App.GetHttpToken();
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
-            HttpRestService.LogOutHttpRquest(request);
+            HttpRestService.LogoutHttpRquest(request);
             var response = await base.SendAsync(request, cancellationToken);
             var str = await response.Content.ReadAsStringAsync();
             Console.WriteLine(str);
@@ -139,7 +139,7 @@ namespace tesla_wpf.Extensions {
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) {
             // 设置匿名请求的标记
             request.RequestUri = new Uri(request.RequestUri.ToString() + "&&_allow_anonymous=true");
-            HttpRestService.LogOutHttpRquest(request);
+            HttpRestService.LogoutHttpRquest(request);
             var response = await base.SendAsync(request, cancellationToken);
             return HttpRestService.HandleHttpIO(request, response);
         }

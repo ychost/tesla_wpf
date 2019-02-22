@@ -157,9 +157,6 @@ namespace tesla_wpf.Route.ViewModel {
             }
         }
 
-        public string Token { get; }
-
-
         /// <summary>
         /// 初始化
         /// </summary>

@@ -24,6 +24,8 @@ namespace tesla_wpf {
         /// </summary>
         public static YEventStore Store = YEventStore.create();
 
+        public static NLog.Logger Logger;
+
         /// <summary>
         /// 初始化数据库啥的
         /// </summary>
@@ -35,6 +37,8 @@ namespace tesla_wpf {
             FileCacheHelper.AppCacheDirectory = string.Format("{0}\\{1}\\Cache\\",
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 Process.GetCurrentProcess().ProcessName);
+            Logger = NLog.LogManager.GetCurrentClassLogger();
+            //Logger.Fatal("发生致命错误");
         }
 
         /// </summary>
