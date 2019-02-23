@@ -152,6 +152,8 @@ namespace tesla_wpf {
                 user = db.Query<User>($"Select * From {nameof(User)}").LastOrDefault();
             });
             if (user != null) {
+                UserLogin.UserName = user.Name;
+                PasswordBox.Password = "xxxxxxxx";
                 try {
                     var rest = await HttpRestService.ForAuthApi<RsSystemApi>().ValidToken(user.Token);
                     if (HttpRestService.ForData(rest, out var message)) {

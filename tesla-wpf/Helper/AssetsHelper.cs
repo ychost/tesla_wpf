@@ -28,7 +28,7 @@ namespace tesla_wpf.Helper {
         /// <summary>
         /// 图片筛选器
         /// </summary>
-        public static string ImageFileter = "(*.jpg*.png*.jpeg)|*.jpg;*.png;*.jpeg";
+        public static readonly string ImageFileter = "(*.jpg*.png*.jpeg)|*.jpg;*.png;*.jpeg";
 
         /// <summary>
         /// 默认的 not found oops!

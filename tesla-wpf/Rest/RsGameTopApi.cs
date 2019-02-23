@@ -66,5 +66,13 @@ namespace tesla_wpf.Rest {
         /// <returns></returns>
         [Post("/tesla-cassette/rank/type/add")]
         Task<Rest<bool?>> AddRankType(RankType rankType);
+
+        /// <summary>
+        /// 删除一个排行记录
+        /// </summary>
+        /// <param name="rankInfoDel"></param>
+        /// <returns></returns>
+        [Post("/tesla-cassette/rank/info/del")]
+        Task<Rest<bool?>> DelRankInfo(RankInfoDel rankInfoDel);
     }
 }

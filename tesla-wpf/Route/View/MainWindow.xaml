@@ -34,7 +34,7 @@
         </ContextMenu>
     </Window.Resources>
 
-    <materialDesign:DialogHost Visibility="Visible" Identifier="RootDialog">
+    <materialDesign:DialogHost Visibility="Visible" Identifier="RootDialog" >
         <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
             <materialDesign:DrawerHost.LeftDrawerContent >
                 <StackPanel Width="260" x:Name="MenuStackPanel">
@@ -108,7 +108,7 @@
                                 <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
                                           IsChecked="{Binding Path=MenuIsChecked}"
                                         x:Name="MenuToggleButton"/>
-                                <TextBlock VerticalAlignment="Center" Margin="16 0 0 0" Text="牛逼的后台管理" />
+                                <TextBlock VerticalAlignment="Center" Margin="16 0 0 0" Text="Tesla" />
                             </StackPanel>
                         </DockPanel>
                     </materialDesign:ColorZone>
@@ -132,7 +132,7 @@
                             </dragablz:TabablzControl.HeaderItemTemplate>
                             <dragablz:TabablzControl.ContentTemplate>
                                 <DataTemplate>
-                                    <ContentPresenter Content="{Binding Content}"/>
+                                    <ContentPresenter  Content="{Binding Content}"/>
                                 </DataTemplate>
                             </dragablz:TabablzControl.ContentTemplate>
                         </dragablz:TabablzControl>

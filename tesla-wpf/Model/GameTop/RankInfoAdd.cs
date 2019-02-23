@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MaterialDesignThemes.Wpf;
+using tesla_wpf.Helper;
 using Vera.Wpf.Lib.Component;
 
 namespace tesla_wpf.Model.GameTop {
@@ -23,5 +24,7 @@ namespace tesla_wpf.Model.GameTop {
         /// </summary>
         [Edit(ItemName = "游戏", ItemIcon = PackIconKind.Games, IsReadonly = true)]
         public string GameName { get; set; }
+
+        
     }
 }

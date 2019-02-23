@@ -64,5 +64,14 @@ namespace tesla_wpf.Model.GameTop {
         /// </summary>
         public int RanNo { get; set; }
 
+        /// <summary>
+        /// 分数截图证据
+        /// </summary>
+        [Edit(ItemName = "截图", ItemIcon = PackIconKind.Image, ItemType = EditItemType.FileChoose,
+            FileChooseFilter = "(*.jpg *.png *.jpeg) | *.jpg;*.png;*.jpeg", FileChooseTitle = "选择截图")]
+        [Required]
+        public string EvidenceImage { get; set; }
+
+        public bool IsSelected { get => GetProperty<bool>(); set => SetProperty(value); }
     }
 }

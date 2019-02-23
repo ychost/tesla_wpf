@@ -91,21 +91,6 @@ namespace tesla_wpf.Route.View {
             DragMove();
         }
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void UIElement_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-            //until we had a StaysOpen glag to Drawer, this will help with scroll bars
-            var dependencyObject = Mouse.Captured as DependencyObject;
-            while (dependencyObject != null) {
-                if (dependencyObject is ScrollBar) return;
-                dependencyObject = VisualTreeHelper.GetParent(dependencyObject);
-            }
-
-            MenuToggleButton.IsChecked = false;
-        }
-        /// <summary>
         /// 退出登录
         /// </summary>
         /// <param name="sender"></param>
@@ -164,6 +149,14 @@ namespace tesla_wpf.Route.View {
         private void exit() {
             taskbar.Dispose();
             Close();
+        }
+
+        private void DialogHost_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
+            taskbar.ShowBalloonTip("你好", "world", BalloonIcon.Info);
+        }
+
+        private void Grid_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
+            taskbar.ShowBalloonTip("你好", "world", BalloonIcon.Info);
         }
     }
 }

@@ -229,6 +229,7 @@
     <Compile Include="Model\GameTop\Game.cs" />
     <Compile Include="Model\GameTop\GameAdd.cs" />
     <Compile Include="Model\GameTop\RankInfo.cs" />
+    <Compile Include="Model\GameTop\RankInfoDel.cs" />
     <Compile Include="Model\GameTop\RankType.cs" />
     <Compile Include="Model\GameTop\RankInfoAdd.cs" />
     <Compile Include="Model\MenuItem.cs" />

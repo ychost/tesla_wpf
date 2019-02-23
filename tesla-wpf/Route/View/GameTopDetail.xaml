@@ -106,18 +106,37 @@
                         </ItemsControl.ItemsPanel>
                     </ItemsControl>
                 </materialDesign:ColorZone>
-                <ListView Grid.Row="1" ItemsSource="{Binding RankInfos}">
+                <ListView Grid.Row="1" ItemsSource="{Binding RankInfos}" SelectedValue="{Binding SelectedRankInfo}">
+                    <ListView.Resources>
+                        <Style TargetType="{x:Type TextBlock}" x:Key="TextStyle">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Margin" Value="0,7,0,0"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Style>
+                    </ListView.Resources>
                     <ListView.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="添加" Command="{Binding Data.AddRankInfoCmd,Source={StaticResource Proxy}}" />
                             <Separator/>
-                            <MenuItem Header="删除" Foreground="Red" Command="{Binding Data.DelRankInfoCmd,Source={StaticResource Proxy}}"/>
+                            <MenuItem Header="删除" Foreground="Red" CommandParameter="{Binding}" Command="{Binding Data.DelRankInfoCmd,Source={StaticResource Proxy}}"/>
                         </ContextMenu>
                     </ListView.ContextMenu>
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn  Header="名次" DisplayMemberBinding="{Binding RanNo}"/>
-                            <GridViewColumn DisplayMemberBinding="{Binding User}" Header="姓名" />
+                            <GridViewColumn  Header="名次" >
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Style="{StaticResource TextStyle}" Text="{Binding RanNo}"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn  Header="姓名" >
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Style="{StaticResource TextStyle}" Text="{Binding User}"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
                             <GridViewColumn Header="头像">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
@@ -129,8 +148,31 @@
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn DisplayMemberBinding="{Binding GameScore}" Header="得分" />
-                            <GridViewColumn DisplayMemberBinding="{Binding UploadTime,StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" Header="上传时间" />
+                            <GridViewColumn  Header="得分" >
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Style="{StaticResource TextStyle}" Text="{Binding GameScore}"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="截图">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button BorderThickness="0" Background="Transparent" Command="{Binding Data.ViewEvidenceCmd,Source={StaticResource Proxy}}"
+                                                      CommandParameter="{Binding}"                              >
+                                            <TextBlock Foreground="Blue" Cursor="Hand" Text="查看" ToolTip="查看截图"
+                                                   />
+                                        </Button>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn  Header="上传时间" >
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Style="{StaticResource TextStyle}" Text="{Binding UploadTime,StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
                         </GridView>
                     </ListView.View>
                 </ListView>

@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using MaterialDesignThemes.Wpf;
+using Refit;
 using tesla_wpf.Extensions;
+using tesla_wpf.Helper;
 using tesla_wpf.Model.Game;
 using tesla_wpf.Model.GameTop;
 using tesla_wpf.Rest;
 using Vera.Wpf.Lib.Component;
 using Vera.Wpf.Lib.Exceptions;
+using Vera.Wpf.Lib.Extensions;
 using Vera.Wpf.Lib.Helper;
 using Vera.Wpf.Lib.Mvvm;
 using Vera.Wpf.Lib.Toolkit;
@@ -40,6 +45,10 @@ namespace tesla_wpf.Route.ViewModel {
         /// </summary>
         public List<RankInfo> RankInfos { get => GetProperty<List<RankInfo>>(); set => SetProperty(value); }
         /// <summary>
+        /// 选中的排行记录
+        /// </summary>
+        public RankInfo SelectedRankInfo { get => GetProperty<RankInfo>(); set => SetProperty(value); }
+        /// <summary>
         /// 排行类别
         /// </summary>
         public List<RankType> RankTypes { get => GetProperty<List<RankType>>(); set => SetProperty(value); }
@@ -49,6 +58,8 @@ namespace tesla_wpf.Route.ViewModel {
         public ICommand SwitchRankTypeCmd => new MdCommand(switchRankTypeExec);
         public ICommand AddRankInfoCmd => new MdCommand(addRankInfoExec);
         public ICommand DelRankInfoCmd => new MdCommand(delRankInfoExec);
+        public ICommand ViewEvidenceCmd => new MdCommand(viewEvidenceExec);
+
 
         /// <summary>
         /// 排行内容缓存
@@ -89,10 +100,6 @@ namespace tesla_wpf.Route.ViewModel {
             .Exec();
         }
 
-        protected override void InitDesignData() {
-
-        }
-
         /// <summary>
         /// 切换选中的排行
         /// </summary>
@@ -113,10 +120,13 @@ namespace tesla_wpf.Route.ViewModel {
         /// 刷新具体的排行内容,根据排行名
         /// </summary>
         /// <param name="rankType"></param>
-        private void refreshRankInfo(string rankTypeName) {
-            if (RankInfosCache.TryGetValue(rankTypeName, out var infos)) {
-                RankInfos = infos;
-                return;
+        private void refreshRankInfo(string rankTypeName, bool force = false) {
+            SelectedRankInfo = null;
+            if (!force) {
+                if (RankInfosCache.TryGetValue(rankTypeName, out var infos)) {
+                    RankInfos = infos;
+                    return;
+                }
             }
             RestProxy.Builder().Try(() => Task.Run(async () => {
                 var rest = await HttpRestService.ForAuthApi<RsGameTopApi>().FetchRankInfos(Game.Name, rankTypeName);
@@ -149,20 +159,30 @@ namespace tesla_wpf.Route.ViewModel {
                 User = App.User.Name
             };
             var dialog = new EditDialog("添加排行记录", items, infoAdd);
-            if (!(await DialogHost.Show(dialog) is RankInfoAdd infoAddRes)) {
+            if (!(await DialogHost.Show(dialog) is RankInfoAdd)) {
                 return;
             }
             RestProxy.Builder().Try(() => Task.Run(async () => {
-                var rest = await HttpRestService.ForAuthApi<RsGameTopApi>().AddRankInfo(infoAddRes);
-                if (!(HttpRestService.ForData(rest, out var rs) && rs.Value)) {
-                    throw new RestFailedException(rest.Message);
+                // 上传图片
+                var stream = File.OpenRead(infoAdd.EvidenceImage);
+                var rest1 = await HttpRestService.ForAuthApi<RsSystemApi>().UploadImage(
+                    new StreamPart(stream, Path.GetFileNameWithoutExtension(infoAdd.EvidenceImage), "image/jepg")
+                    );
+                if (!(HttpRestService.ForData(rest1, out var imageUrl))) {
+                    throw new RestFailedException(rest1.Message);
+                }
+                infoAdd.EvidenceImage = imageUrl;
+                // 上传排行数据
+                var rest2 = await HttpRestService.ForAuthApi<RsGameTopApi>().AddRankInfo(infoAdd);
+                if (!(HttpRestService.ForData(rest2, out var rs) && rs.Value)) {
+                    throw new RestFailedException(rest2.Message);
                 }
             }))
-            .Catch(typeof(Exception))
+            .CatchAllExps()
             .LoadingMessage("上传中...")
             .SuccessMessage("添加成功")
             .FailedMessage("添加失败")
-            .SuccessAction(() => refreshRankInfo(SelectedRankType.Name))
+            .SuccessAction(() => refreshRankInfo(SelectedRankType.Name, true))
             .Build()
             .Exec();
         }
@@ -171,8 +191,30 @@ namespace tesla_wpf.Route.ViewModel {
         /// 删除某个排名数据
         /// </summary>
         /// <param name="obj"></param>
-        private void delRankInfoExec(object obj) {
-
+        private async void delRankInfoExec(object obj) {
+            if (SelectedRankInfo == null) {
+                NotifyHelper.ShowWarnMessage("请选择需要删除的行");
+                return;
+            }
+            var confirm = await DialogHost.Show(new ConfirmDialog($"确定删除 {SelectedRankInfo.User} 的成绩 {SelectedRankInfo.GameScore}")) as bool?;
+            if (confirm != true) {
+                return;
+            }
+            RestProxy.Builder().Try(() => Task.Run(async () => {
+                var rest = await HttpRestService.ForAuthApi<RsGameTopApi>().DelRankInfo(new RankInfoDel() {
+                    GameName = Game.Name,
+                    RankTypeName = SelectedRankType.Name,
+                    User = SelectedRankInfo.User
+                });
+                if (!(HttpRestService.ForData(rest, out var rs) && rs == true)) {
+                    throw new RestFailedException(rest.Message);
+                }
+            }))
+            .CatchAllExps()
+            .SuccessMessage("删除成功")
+            .FinalAction(() => refreshRankInfo(SelectedRankType.Name, true))
+            .Build()
+            .Exec();
         }
 
         /// <summary>
@@ -187,5 +229,20 @@ namespace tesla_wpf.Route.ViewModel {
             }
         }
 
+        /// <summary>
+        /// 查看游戏分数截图
+        /// </summary>
+        /// <param name="obj"></param>
+        private async void viewEvidenceExec(object obj) {
+            var info = obj as RankInfo;
+            if (info == null) {
+                return;
+            }
+            DialogHost.Show(new LoadingDialog(System.Windows.Visibility.Visible));
+            var imageSource = AssetsHelper.FetchImage(info.EvidenceImage);
+            await Task.Delay(700);
+            DialogHostExtension.CloseInMainThread(null, null);
+            DialogHostExtension.ShowInMainThread(new ImageDialog(imageSource));
+        }
     }
 }

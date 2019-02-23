@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using MaterialDesignThemes.Wpf;
+using NLog;
 using tesla_wpf.Event;
 using tesla_wpf.Extensions;
 using tesla_wpf.Model.Game;
@@ -28,6 +29,7 @@ namespace tesla_wpf.Route.ViewModel {
     public class GameTopListViewModel : BaseViewModel {
         public List<Game> Games { get => GetProperty<List<Game>>(); set => SetProperty(value); }
         public GameAdd GameAdd { get; set; } = new GameAdd();
+        public readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public ICommand AddGameCmd => new MdCommand(addGameExec);
         public ICommand ViewGameCmd => new MdCommand(viewGameExec);
@@ -95,6 +97,7 @@ namespace tesla_wpf.Route.ViewModel {
             } catch (UploadException e) {
                 NotifyHelper.ShowErrorMessage(e.Message);
             } catch (Exception e) {
+                Logger.Error<Exception>("上传图片失败", e);
                 NotifyHelper.ShowErrorMessage("上传失败!");
             } finally {
                 coverStream?.Close();
@@ -113,6 +116,7 @@ namespace tesla_wpf.Route.ViewModel {
                     NotifyHelper.ShowErrorMessage(rest.Message);
                 }
             } catch (Exception e) {
+                Logger.Error("加载游戏失败：" + e.Message);
                 NotifyHelper.ShowErrorMessage("加载游戏数据失败!");
             }
         }
