@@ -164,18 +164,13 @@ namespace tesla_wpf.Route.ViewModel {
             }
             RestProxy.Builder().Try(() => Task.Run(async () => {
                 // 上传图片
-                var stream = File.OpenRead(infoAdd.EvidenceImage);
-                var rest1 = await HttpRestService.ForAuthApi<RsSystemApi>().UploadImage(
-                    new StreamPart(stream, Path.GetFileNameWithoutExtension(infoAdd.EvidenceImage), "image/jepg")
-                    );
-                if (!(HttpRestService.ForData(rest1, out var imageUrl))) {
-                    throw new RestFailedException(rest1.Message);
-                }
-                infoAdd.EvidenceImage = imageUrl;
+                var key = CloudStorageHelper.BuildImageFileKey(infoAdd.EvidenceImage);
+                await CloudStorageHelper.GetCloudStorage().PutImage(infoAdd.EvidenceImage, key);
+                infoAdd.EvidenceImage = key;
                 // 上传排行数据
-                var rest2 = await HttpRestService.ForAuthApi<RsGameTopApi>().AddRankInfo(infoAdd);
-                if (!(HttpRestService.ForData(rest2, out var rs) && rs.Value)) {
-                    throw new RestFailedException(rest2.Message);
+                var rest = await HttpRestService.ForAuthApi<RsGameTopApi>().AddRankInfo(infoAdd);
+                if (!(HttpRestService.ForData(rest, out var rs) && rs.Value)) {
+                    throw new RestFailedException(rest.Message);
                 }
             }))
             .CatchAllExps()

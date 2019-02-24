@@ -72,6 +72,5 @@ namespace tesla_wpf.Model.GameTop {
         [Required]
         public string EvidenceImage { get; set; }
 
-        public bool IsSelected { get => GetProperty<bool>(); set => SetProperty(value); }
     }
 }
