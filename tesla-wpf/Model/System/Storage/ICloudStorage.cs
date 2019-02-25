@@ -32,7 +32,15 @@ namespace tesla_wpf.Model.System.Storage {
         /// <param name="fileKey">图片 key</param>
         /// <returns></returns>
         Task DelImage(string fileKey);
+    }
 
+    /// <summary>
+    /// 对云存储文件操作触发的异常
+    /// <date>2019-2-25</date>
+    /// </summary>
+    public class StorageException : Exception {
+        public StorageException(string message) : base(message) {
 
+        }
     }
 }

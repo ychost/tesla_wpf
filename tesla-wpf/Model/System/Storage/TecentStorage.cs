@@ -55,11 +55,15 @@ namespace tesla_wpf.Model.System.Storage {
             request.SetSign(TimeUtils.GetCurrentTime(TimeUnit.SECONDS), signValidSec);
             //设置进度回调
             request.SetCosProgressCallback((c, t) => {
-                logger.Trace("上传进度 {}%", c / t * 100);
+                double percent = (double)c / t * 100;
+                logger.Trace("上传进度 {}%", percent.ToString("0.00"));
             });
             //执行请求
             PutObjectResult result = cosService.PutObject(request);
-            logger.Trace(result.GetResultInfo());
+            if (result.httpCode != 200) {
+                throw new StorageException(result.httpMessage);
+            }
+            //logger.Trace(result.GetResultInfo());
         }
 
         /// <summary>
@@ -70,27 +74,33 @@ namespace tesla_wpf.Model.System.Storage {
         /// <param name="localFileName">本地文件名</param>
         /// <returns></returns>
         public async Task GetImage(string fileKey, string localDir, string localFileName) {
+            var tmpFile = "tmp_" + localFileName;
+            var tmpFilePath = localDir + "/" + tmpFile;
+            var localFilePath = localDir + "/" + localFileName;
             var cosService = await buildCosService(getImageCredential, fileKey);
-            var request = new GetObjectRequest(getImageCredential.TmpCred.Bucket, fileKey, localDir, localFileName);
+            var request = new GetObjectRequest(getImageCredential.TmpCred.Bucket, fileKey, localDir, tmpFile);
             request.SetSign(TimeUtils.GetCurrentTime(TimeUnit.SECONDS), signValidSec);
             request.SetCosProgressCallback((c, t) => {
-                double percent = (double)c / t;
-                logger.Trace("下载进度 {}%", percent * 100);
+                double percent = (double)c / t * 100;
+                logger.Trace("下载进度 {}%", percent.ToString("0.00"));
             });
             try {
                 var result = cosService.GetObject(request);
-                logger.Trace(result.GetResultInfo());
-                // 下载失败也会出现残留文件，这里将它删除
-                if (result.httpCode != 200) {
-                    if (File.Exists(localDir + "/" + localFileName)) {
-                        File.Delete(localDir + "/" + localFileName);
+                //logger.Trace(result.GetResultInfo());
+                // 下载成功，将临时文件移动到指定位置
+                if (result.httpCode == 200) {
+                    File.Move(tmpFilePath, localFilePath);
+                    // 下载失败也会出现残留文件，这里将临时下载残留文件删除
+                } else {
+                    if (File.Exists(tmpFilePath)) {
+                        File.Delete(tmpFilePath);
                     }
-                    throw new Exception(result.httpMessage);
+                    throw new StorageException(result.httpMessage);
                 }
             } catch (Exception e) {
                 // 下载失败也会出现残留文件，这里将它删除
-                if (File.Exists(localDir + "/" + localFileName)) {
-                    File.Delete(localDir + "/" + localFileName);
+                if (File.Exists(tmpFilePath)) {
+                    File.Delete(tmpFilePath);
                 }
                 throw e;
             }
@@ -106,7 +116,10 @@ namespace tesla_wpf.Model.System.Storage {
             var request = new DeleteObjectRequest(getImageCredential.TmpCred.Bucket, fileKey);
             request.SetSign(TimeUtils.GetCurrentTime(TimeUnit.SECONDS), signValidSec);
             var result = cosService.DeleteObject(request);
-            logger.Trace(result.GetResultInfo());
+            if (result.httpCode != 200) {
+                throw new StorageException(result.httpMessage);
+            }
+            //logger.Trace(result.GetResultInfo());
         }
 
 

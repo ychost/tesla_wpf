@@ -97,7 +97,7 @@ namespace tesla_wpf.Route.ViewModel {
             } catch (UploadException e) {
                 NotifyHelper.ShowErrorMessage(e.Message);
             } catch (Exception e) {
-                Logger.Error<Exception>("上传图片失败", e);
+                Logger.Error(e, "上传图片失败");
                 NotifyHelper.ShowErrorMessage("上传失败!");
             } finally {
                 coverStream?.Close();
@@ -121,6 +121,7 @@ namespace tesla_wpf.Route.ViewModel {
             }
         }
 
+        #region 设计数据
         protected override void InitDesignData() {
             var top3Users = new List<User>() {
                 new User() {
@@ -181,7 +182,7 @@ namespace tesla_wpf.Route.ViewModel {
                 }
 
             };
-
         }
+        #endregion
     }
 }

@@ -24,7 +24,8 @@
         xmlns:behaviours="clr-namespace:Vera.Wpf.Lib.Mvvm;assembly=Vera.Wpf.Lib"
         xmlns:component="clr-namespace:Vera.Wpf.Lib.Component;assembly=Vera.Wpf.Lib"
         xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
-        AllowsTransparency="False"
+        AllowsTransparency="True"
+        ResizeMode="NoResize"
         >
     <Window.Resources>
         <vm:MainWindowViewModel x:Key="ViewModel"/>

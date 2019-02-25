@@ -195,10 +195,12 @@ namespace tesla_wpf {
                     NotifyHelper.ShowErrorMessage(rest.Message);
                 }
             } catch (Exception e) {
-                logger.Error<Exception>("登录异常", e);
+                logger.Error(e, "登录异常");
+                Console.Write("登录异常");
                 NotifyHelper.ShowErrorMessage("网络错误");
             }
             IsLogining = false;
+
         }
 
         /// <summary>

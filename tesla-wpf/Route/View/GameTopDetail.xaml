@@ -158,9 +158,9 @@
                             <GridViewColumn Header="截图">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button BorderThickness="0" Background="Transparent" Command="{Binding Data.ViewEvidenceCmd,Source={StaticResource Proxy}}"
+                                        <Button Margin="-15,0,0,0" HorizontalAlignment="Left" BorderThickness="0" Background="Transparent" Command="{Binding Data.ViewEvidenceCmd,Source={StaticResource Proxy}}"
                                                       CommandParameter="{Binding}"                              >
-                                            <TextBlock Foreground="Blue" Cursor="Hand" Text="查看" ToolTip="查看截图"
+                                            <TextBlock HorizontalAlignment="Left"  Foreground="Blue" Cursor="Hand" Text="查看" ToolTip="查看截图"
                                                    />
                                         </Button>
                                     </DataTemplate>
