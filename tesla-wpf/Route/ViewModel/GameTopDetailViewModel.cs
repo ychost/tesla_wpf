@@ -234,7 +234,7 @@ namespace tesla_wpf.Route.ViewModel {
                 return;
             }
             DialogHost.Show(new LoadingDialog(System.Windows.Visibility.Visible));
-            var imageSource = AssetsHelper.FetchImage(info.EvidenceImage);
+            var imageSource = await AssetsHelper.FetchImage(info.EvidenceImage);
             await Task.Delay(700);
             DialogHostExtension.CloseInMainThread(null, null);
             DialogHostExtension.ShowInMainThread(new ImageDialog(imageSource));

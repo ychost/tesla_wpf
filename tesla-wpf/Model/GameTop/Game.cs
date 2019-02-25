@@ -19,12 +19,19 @@ namespace tesla_wpf.Model.Game {
         [Required, StringLength(maximumLength: 50, MinimumLength = 1, ErrorMessage = "名称长度为 [1-50]")]
         public string Name { get => GetProperty(() => Name); set => SetProperty(() => Name, value); }
 
-        [Required,StringLength(maximumLength:512, ErrorMessage = "长度不能超过 512")]
+        [Required, StringLength(maximumLength: 512, ErrorMessage = "长度不能超过 512")]
         public string Description { get => GetProperty(() => Description); set => SetProperty(() => Description, value); }
 
 
         [Required(ErrorMessage = "游戏封面不能为空")]
-        public string CoverUrl { get => GetProperty(() => CoverUrl); set => SetProperty(() => CoverUrl, value); }
+        //public string CoverUrl { get => GetProperty(() => CoverUrl); set => SetProperty(() => CoverUrl, value); }
+        public string CoverUrl {
+            get => GetProperty<string>(); set {
+                if (SetProperty(value)) {
+                    initCoverImage(value);
+                }
+            }
+        }
 
         [StringLength(maximumLength: 128, ErrorMessage = "连接长度不能超过 128")]
         public string OfficialWebsite { get => GetProperty(() => OfficialWebsite); set => SetProperty(() => OfficialWebsite, value); }
@@ -36,18 +43,21 @@ namespace tesla_wpf.Model.Game {
         /// </summary>
         [JsonIgnore]
         public List<User> Top3Users { get; set; }
-        private ImageSource coverImage;
-        [JsonIgnore]
-        public ImageSource CoverImage {
-            get {
-                try {
-                    if (coverImage == null) {
-                        coverImage = AssetsHelper.FetchCloudImage(CoverUrl);
-                    }
-                } catch (Exception e) {
-                    return AssetsHelper.MountainImageSource;
+
+        public ImageSource CoverImage { get => GetProperty<ImageSource>(); set => SetProperty(value); }
+
+        /// <summary>
+        /// 异步初始化封面图片
+        /// </summary>
+        /// <param name="url"></param>
+        private async void initCoverImage(string url) {
+            try {
+                if (CoverImage == null) {
+                    CoverImage = await AssetsHelper.FetchImage(CoverUrl);
                 }
-                return coverImage;
+            } catch (Exception e) {
+                App.Logger.Error("加载封面图片失败：" + e.Message);
+                CoverImage = AssetsHelper.MountainImageSource;
             }
         }
     }

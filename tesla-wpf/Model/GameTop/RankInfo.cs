@@ -19,20 +19,30 @@ namespace tesla_wpf.Model.GameTop {
         /// <summary>
         /// 用户头像
         /// </summary>
-        public string Avatar { get; set; }
-
-        private ImageSource avatarImage;
-        [JsonIgnore]
-        public ImageSource AvatarImage {
-            get {
-                if (avatarImage == null) {
-                    try {
-                        avatarImage = AssetsHelper.FetchImage(Avatar);
-                    } catch {
-                        return AssetsHelper.UserImaggeSource;
-                    }
+        //public string Avatar { get; set; }
+        public string Avatar {
+            get => GetProperty<string>(); set {
+                if (SetProperty(value)) {
+                    initAvatar(value);
                 }
-                return avatarImage;
+            }
+        }
+
+
+        [JsonIgnore]
+        public ImageSource AvatarImage { get => GetProperty<ImageSource>(); set => SetProperty(value); }
+
+        /// <summary>
+        /// 由于下载图片方法是异步的，所以只能自己手工初始化头像
+        /// </summary>
+        /// <param name="url"></param>
+        private async void initAvatar(string url) {
+            if (AvatarImage == null) {
+                try {
+                    AvatarImage = await AssetsHelper.FetchImage(url);
+                } catch {
+                    AvatarImage = AssetsHelper.UserImaggeSource;
+                }
             }
         }
 

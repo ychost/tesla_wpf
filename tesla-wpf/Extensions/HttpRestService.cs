@@ -73,11 +73,14 @@ namespace tesla_wpf.Extensions {
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static bool ForData<T>(Rest<T> rest, out T data) {
+            data = default(T);
+            if (rest == null) {
+                return false;
+            }
             if (rest.Code == HttpRestcode.Success) {
                 data = rest.Data;
                 return true;
             }
-            data = default(T);
             return false;
         }
 

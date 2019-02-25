@@ -28,6 +28,15 @@ namespace tesla_wpf.Helper {
         }
 
         /// <summary>
+        /// 检查 key 是否为云存储图片
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static bool IsCloudImage(string key) {
+            return key != null && (key.StartsWith("/images/") || key.StartsWith("/cassette/"));
+        }
+
+        /// <summary>
         /// 构建云图片 key
         /// </summary>
         /// <param name="fileSrc"></param>

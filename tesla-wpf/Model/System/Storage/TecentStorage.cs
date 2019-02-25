@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using COSXML;
 using COSXML.Auth;
 using COSXML.Model.Object;
 using COSXML.Utils;
+using Nito.AsyncEx;
 using NLog;
 using tesla_wpf.Extensions;
 using tesla_wpf.Model.System.Storage;
@@ -53,7 +55,7 @@ namespace tesla_wpf.Model.System.Storage {
             request.SetSign(TimeUtils.GetCurrentTime(TimeUnit.SECONDS), signValidSec);
             //设置进度回调
             request.SetCosProgressCallback((c, t) => {
-                logger.Trace("上传进度{}/{}", c, t);
+                logger.Trace("上传进度 {}%", c / t * 100);
             });
             //执行请求
             PutObjectResult result = cosService.PutObject(request);
@@ -72,10 +74,26 @@ namespace tesla_wpf.Model.System.Storage {
             var request = new GetObjectRequest(getImageCredential.TmpCred.Bucket, fileKey, localDir, localFileName);
             request.SetSign(TimeUtils.GetCurrentTime(TimeUnit.SECONDS), signValidSec);
             request.SetCosProgressCallback((c, t) => {
-                logger.Trace("上传进度{}/{}", c, t);
+                double percent = (double)c / t;
+                logger.Trace("下载进度 {}%", percent * 100);
             });
-            var result = cosService.GetObject(request);
-            logger.Trace(result.GetResultInfo());
+            try {
+                var result = cosService.GetObject(request);
+                logger.Trace(result.GetResultInfo());
+                // 下载失败也会出现残留文件，这里将它删除
+                if (result.httpCode != 200) {
+                    if (File.Exists(localDir + "/" + localFileName)) {
+                        File.Delete(localDir + "/" + localFileName);
+                    }
+                    throw new Exception(result.httpMessage);
+                }
+            } catch (Exception e) {
+                // 下载失败也会出现残留文件，这里将它删除
+                if (File.Exists(localDir + "/" + localFileName)) {
+                    File.Delete(localDir + "/" + localFileName);
+                }
+                throw e;
+            }
         }
 
         /// <summary>
@@ -130,7 +148,6 @@ namespace tesla_wpf.Model.System.Storage {
         public abstract class AbstractQCloudCredential : QCloudCredentialProvider {
             QCloudCredentials cloudCredentials;
             public StorageTmpCredential TmpCred { get; set; }
-            public DefaultSessionQCloudCredentialProvider SessionProvider { get; set; }
             /// <summary>
             /// 系统调用
             /// </summary>
@@ -151,32 +168,35 @@ namespace tesla_wpf.Model.System.Storage {
             /// </summary>
             /// <returns></returns>
             protected abstract Task<Rest<StorageTmpCredential>> fetchTmpCred(string fileKey);
+            /// <summary>
+            /// 标志位，解决多线程带来的 bug
+            /// </summary>
+            public AsyncLock AsyncLocker = new AsyncLock();
 
             /// <summary>
             /// 初始化临时账号
             /// </summary>
             /// <param name="fileKey">操作文件 key，可以为空，删除资源的时候不能为空</param>
             public async Task Init(string fileKey) {
-                var rest = await fetchTmpCred(fileKey);
-                if (!HttpRestService.ForData(rest, out var cred)) {
-                    throw new RestFailedException(rest.Message);
+                using (await AsyncLocker.LockAsync()) {
+                    // 防止重复初始化
+                    if (!IsTimeout()) {
+                        return;
+                    }
+                    var rest = await fetchTmpCred(fileKey);
+                    if (!HttpRestService.ForData(rest, out var cred)) {
+                        throw new RestFailedException(rest.Message);
+                    }
+                    TmpCred = cred;
+                    var keyTime = $"{TimeHelper.GetTimestampSec(cred.StartTime)};{TimeHelper.GetTimestampSec(cred.ExpiredTime)}";
+                    string signKey = DigestUtils.GetHamcSha1ToHexString(keyTime, Encoding.UTF8, cred.TmpSecretKey, Encoding.UTF8);
+                    cloudCredentials = new SessionQCloudCredentials(
+                        cred.TmpSecretId,
+                        signKey,
+                        cred.SessionToken,
+                        keyTime
+                        );
                 }
-
-                SessionProvider = new DefaultSessionQCloudCredentialProvider(
-                    cred.TmpSecretId,
-                    cred.TmpSecretKey,
-                    TimeHelper.GetTimestampSec(cred.StartTime),
-                    TimeHelper.GetTimestampSec(cred.ExpiredTime),
-                    cred.SessionToken);
-                TmpCred = cred;
-                var keyTime = $"{TimeHelper.GetTimestampSec(cred.StartTime)};{TimeHelper.GetTimestampSec(cred.ExpiredTime)}";
-                string signKey = DigestUtils.GetHamcSha1ToHexString(keyTime, Encoding.UTF8, cred.TmpSecretKey, Encoding.UTF8);
-                cloudCredentials = new SessionQCloudCredentials(
-                    cred.TmpSecretId,
-                    signKey,
-                    cred.SessionToken,
-                    keyTime
-                    );
             }
 
             /// <summary>
