@@ -48,6 +48,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -244,6 +245,7 @@
     <Compile Include="Event\AddTabEvent.cs" />
     <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Extensions\MenuExtensions.cs" />
+    <Compile Include="Extensions\NLogHttpTraget.cs" />
     <Compile Include="Extensions\NotifyExtensions.cs" />
     <Compile Include="Extensions\HttpRestService.cs" />
     <Compile Include="Extensions\VisualTreeHelperExtensions.cs" />

@@ -1,4 +1,7 @@
-﻿using System;
+﻿#define CONSOLE
+#undef CONSOLE
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
@@ -10,35 +13,47 @@ using System.Linq;
 using System.Management;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Hardcodet.Wpf.TaskbarNotification;
 using Markdig.Wpf;
 using NLog;
+using NLog.Targets;
+using tesla_wpf.Extensions;
 using tesla_wpf.Helper;
 using tesla_wpf.Model.Setting;
 using Vera.Wpf.Lib.Helper;
 using YEvent;
 using static tesla_wpf.Route.View.GameDetailEdit;
 
+
 namespace tesla_wpf {
     /// <summary>
     /// App.xaml 的交互逻辑
     /// </summary>
     public partial class App : Application {
+
         /// <summary>
         /// 事件中心
         /// </summary>
         public static YEventStore Store = YEventStore.create();
 
         /// <summary>
+        /// 主线程 Id
+        /// </summary>
+        private static readonly int mainThreadId;
+
+        /// <summary>
         /// 日志工具，可输出到终端、文件、数据库，见 NLog.config
         /// </summary>
-        public static Logger Logger = LogManager.GetCurrentClassLogger();
-
+        public static Logger Logger;
         static App() {
-            initLogVar();
+            mainThreadId = Thread.CurrentThread.ManagedThreadId;
+            initLogger();
+            Logger = LogManager.GetCurrentClassLogger();
         }
+
 
         /// <summary>
         /// 初始化数据库啥的
@@ -46,7 +61,9 @@ namespace tesla_wpf {
         /// <param name="e"></param>
         protected override void OnStartup(StartupEventArgs e) {
             base.OnStartup(e);
+#if CONSOLE
             ConsoleHelper.Show();
+#endif
             MarkdownViewer.SetRenderHook(new RenderHook());
             SqliteHelper.Init(Path.GetFullPath("./tesla.db"));
             FileCacheHelper.AppCacheDirectory = string.Format("{0}\\{1}\\Cache\\",
@@ -86,7 +103,8 @@ namespace tesla_wpf {
         /// <summary>
         /// 配置一些日志里面用到的变量
         /// </summary>
-        private static void initLogVar() {
+        private static void initLogger() {
+            Target.Register<NLogHttpTraget>("LogstashHttp");
             // 用户名
             LogManager.Configuration.Variables["userName"] = "Unknown";
             // 系统版本
@@ -95,6 +113,14 @@ namespace tesla_wpf {
             LogManager.Configuration.Variables["osVersion"] = osVersion.ToString() + "_" + (Environment.Is64BitOperatingSystem ? "x64" : "x86");
             // .net 版本
             LogManager.Configuration.Variables["netVersion"] = Environment.Version.ToString();
+        }
+
+        /// <summary>
+        /// 检查当前线程是否为主线程
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsInMainThread() {
+            return Thread.CurrentThread.ManagedThreadId == mainThreadId;
         }
 
     }
