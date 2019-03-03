@@ -270,6 +270,11 @@
     <Compile Include="Rest\RestJsonSerializer.cs" />
     <Compile Include="Rest\RsUserLogin.cs" />
     <Compile Include="Rest\RsUserSettings.cs" />
+    <Compile Include="Route\DzGame\DzGameView.xaml.cs">
+      <DependentUpon>DzGameView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Route\DzGame\DzGameViewModel.cs" />
+    <Compile Include="Route\DzGame\DzGameWord.cs" />
     <Compile Include="Route\RouteConfig.cs" />
     <Compile Include="Route\ViewModel\GameTopDetailViewModel.cs" />
     <Compile Include="Route\ViewModel\GameTopListViewModel.cs" />
@@ -323,6 +328,10 @@
       <DependentUpon>LoginWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Route\DzGame\DzGameView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Route\View\GameDetailEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

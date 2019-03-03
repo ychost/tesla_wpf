@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using tesla_wpf.Model;
 using tesla_wpf.Route.View;
+using tesla_wpf.Route.DzGame;
 
 namespace tesla_wpf.Route {
     /// <summary>
@@ -14,7 +15,8 @@ namespace tesla_wpf.Route {
     public static class RouteConfig {
         public static readonly IDictionary<string, RouteItem> MenuConfig = new Dictionary<string, RouteItem>() {
             ["/home"] = new RouteItem(typeof(HomeView)),
-            ["/game-top/list"] = new RouteItem(typeof(GameTopList))
+            ["/game-top/list"] = new RouteItem(typeof(GameTopList)),
+            ["/games/dz-game"] = new RouteItem(typeof(DzGameView))
         };
 
     }
