@@ -24,9 +24,10 @@ namespace tesla_wpf.Extensions {
         static readonly JsonSerializerSettings jsonSettings = new JsonSerializerSettings() {
             ContractResolver = new CamelCasePropertyNamesContractResolver()
         };
-        static readonly string apiUrl = "http://reg.sudoyc.com:1002";
+        //static readonly string apiUrl = "http://reg.sudoyc.com:1002";
+        static readonly string apiUrl = "http://ks.sudoyc.com:31002";
         // 每次请求的最长时间
-        static readonly TimeSpan RequestTimeout = TimeSpan.FromMinutes(5);
+        static readonly TimeSpan RequestTimeout = TimeSpan.FromDays(1);
 
         public static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -94,7 +95,7 @@ namespace tesla_wpf.Extensions {
             var res = await response.Content.ReadAsStringAsync();
             Logger.Trace("response data: " + res);
             if (response.StatusCode != HttpStatusCode.OK) {
-                Logger.Error("响应错误", JsonConvert.SerializeObject(response.Content));
+                Logger.Error("响应错误 {}", JsonConvert.SerializeObject(response.Content));
             }
             return response;
         }

@@ -158,7 +158,11 @@ namespace tesla_wpf.Helper {
                 }
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
-                client.DownloadFile(new Uri(url), savePath);
+                if (CloudStorageHelper.IsCloudImage(url)) {
+                    CloudStorageHelper.GetCloudStorage().GetImage(url, folder, name + extension);
+                } else {
+                    client.DownloadFile(new Uri(url), savePath);
+                }
                 return name + extension;
             }
         }

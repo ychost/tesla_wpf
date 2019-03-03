@@ -17,19 +17,17 @@ namespace tesla_wpf.Extensions {
     [Target("LogstashHttp")]
     public class NLogHttpTraget : TargetWithLayout {
         /// <summary>
-        /// 
+        /// 写入数据到 Logstash 这里是同步方法
         /// </summary>
         /// <param name="logEvent"></param>
         protected override void Write(LogEventInfo logEvent) {
             var message = Layout.Render(logEvent);
             try {
-                // 解决 logstash 乱码
-                var gb2312 = Encoding.GetEncoding("gb2312");
-                var data = Encoding.Convert(gb2312, Encoding.UTF8, gb2312.GetBytes(message));
-                message = gb2312.GetString(data);
                 using (var web = new WebClient()) {
                     web.Headers["Authorization"] = "Basic dGVzbGE6MTEyMjEx";
-                    var res = web.UploadString("http://ks.sudoyc.com:33256", message);
+                    // 解决 logstash 乱码
+                    var resBytes = web.UploadData("http://ks.sudoyc.com:33256", Encoding.UTF8.GetBytes(message));
+                    var res = Encoding.UTF8.GetString(resBytes);
                     if (res != "ok") {
                         throw new Exception(res);
                     }
