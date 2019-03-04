@@ -30,7 +30,9 @@ namespace tesla_wpf.Route.DzGame {
         Default,
         // 正在敲打
         Typing,
-        // 敲打错误
+        // 一个单词未完成，但是中途错误了
+        WrongTyping,
+        // 单词已完成，敲打错误
         Wrong,
         // 敲打成功
         Corrected

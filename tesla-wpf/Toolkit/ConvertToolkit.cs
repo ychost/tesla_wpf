@@ -47,9 +47,12 @@ namespace tesla_wpf.Toolkit {
         /// <returns></returns>
         public static ObservableCollection<MenuItem> ConvertMenus(List<RsMenu> rsMenus) {
             var menuItems = new ObservableCollection<MenuItem>();
+            if (rsMenus == null) {
+                return menuItems;
+            }
             foreach (var rm in rsMenus) {
                 // 子菜单
-                if (rm.Children == null || rm.Children.Count == 0) {
+                if ((rm.Children == null || rm.Children.Count == 0)) {
                     if (RouteConfig.MenuConfig.TryGetValue(rm.Link, out var route)) {
                         var view = (IMenu)Activator.CreateInstance(route.ViewType);
                         var item = new MenuItem(rm.Text, view, rm.Icon) {

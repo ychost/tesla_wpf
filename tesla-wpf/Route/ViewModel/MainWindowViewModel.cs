@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Input;
 using Dragablz;
 using MaterialDesignThemes.Wpf;
+using NLog;
 using RestSharp;
 using tesla_wpf.Event;
 using tesla_wpf.Extensions;
@@ -41,6 +42,8 @@ namespace tesla_wpf.Route.ViewModel {
         /// 菜单是否处于打开状态
         /// </summary>
         public bool MenuIsChecked { get => GetProperty<bool>(); set => SetProperty(value); }
+
+        public readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// 菜单列表
@@ -177,7 +180,7 @@ namespace tesla_wpf.Route.ViewModel {
                 if (tabEvent.IsSwitchIt) {
                     SelectedTab = tab;
                 }
-            },true);
+            }, true);
         }
 
 
@@ -214,7 +217,7 @@ namespace tesla_wpf.Route.ViewModel {
                     MenuItems = ConvertToolkit.ConvertMenus(settings.Menus);
                     Application.Current.Dispatcher.Invoke(() => {
                         TabItems.CollectionChanged += disptachTabEvent;
-                        setSelectedMenu(MenuItems[1]);
+                        setSelectedMenu(MenuItems[0].SubMenus[0]);
                     });
                 } else {
                     await Application.Current.Dispatcher.Invoke(async () => {
@@ -224,6 +227,7 @@ namespace tesla_wpf.Route.ViewModel {
                 }
             } catch (Exception e) {
                 NotifyHelper.ShowErrorMessage("系统错误" + e.Message);
+                Logger.Error(e, "加载菜单失败");
             }
         }
 

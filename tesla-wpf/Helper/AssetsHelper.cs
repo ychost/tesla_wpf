@@ -64,21 +64,20 @@ namespace tesla_wpf.Helper {
             if (CloudStorageHelper.IsCloudImage(url) && !FileCacheHelper.IsCached(url)) {
                 var storage = CloudStorageHelper.GetCloudStorage();
                 await storage.GetImage(url, FileCacheHelper.AppCacheDirectory, FileCacheHelper.BuildFileName(url));
-                //url = "https://tesla-1252572735.cos.ap-chengdu.myqcloud.com" + url;
             }
             var stream = FileCacheHelper.Hit(url);
             return LoadImageStream(stream);
         }
 
         /// <summary>
-        /// 缓存有图片则从缓存加载
-        /// 否则 加载云图片,比如 腾讯云 Cos,然后再缓存下来
+        /// 从联网下载图片
         /// </summary>
-        /// <param name="cloudKey">Cos 里面的 key</param>
+        /// <param name="url"></param>
         /// <returns></returns>
-        public static ImageSource FetchCloudImage(string cloudKey) {
-            var url = "https://tesla-1252572735.cos.ap-chengdu.myqcloud.com" + cloudKey;
-            var stream = FileCacheHelper.Hit(url);
+        public static async Task<ImageSource> FetchNetworkImage(string url) {
+            var stream = await Task.Run(() => {
+                return FileCacheHelper.Hit(url);
+            });
             return LoadImageStream(stream);
         }
 

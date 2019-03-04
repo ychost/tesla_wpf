@@ -5,7 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:tesla_wpf.Route.DzGame"
              mc:Ignorable="d" 
+             Background="#add5ff"
              x:Name="UserControl"
+             FontFamily="Times New Roman, Times, serif"
              xmlns:con="http://schemas.kent.boogaart.com/converters"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              d:DataContext="{Binding Source={StaticResource ViewModel}}"
@@ -28,12 +30,18 @@
             <Setter Property="Foreground" Value="Black"/>
         </Style>
 
-        <!--背景色就只有两种，选中和非选中-->
+        <!--背景色就，三种，默认、敲打中正确、敲打中失败-->
+        <Style TargetType="{x:Type Border}">
+            <Setter Property="Padding" Value="5,0,0,5"/>
+        </Style>
         <Style TargetType="{x:Type Border}" x:Key="TypingWordBorder">
             <Setter Property="Background" Value="#dddddd"/>
         </Style>
         <Style TargetType="{x:Type Border}" x:Key="NotTypingWordBorder">
             <Setter Property="Background" Value="White"/>
+        </Style>
+        <Style TargetType="{x:Type Border}" x:Key="WrongTypingWordBorder">
+            <Setter Property="Background" Value="Red"/>
         </Style>
 
         <!--敲打正确的单词-->
@@ -46,66 +54,81 @@
             <Setter Property="Foreground" Value="Red"/>
         </Style>
     </UserControl.Resources>
-    <StackPanel Orientation="Vertical">
-        <ItemsControl Height="60" Width="1300" ItemsSource="{Binding Line1Words}" Background="White">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Border Padding="4"   Margin="15,10,0,0" CornerRadius="5" BorderThickness="0">
-                        <!--控制当前选中单词背景-->
-                        <Border.Style>
-                            <MultiBinding Converter="{StaticResource ResourceKey=WorderBorderStyleConverter}">
-                                <MultiBinding.Bindings>
-                                    <Binding ElementName="UserControl"/>
-                                    <Binding Path="."/>
-                                </MultiBinding.Bindings>
-                            </MultiBinding>
-                        </Border.Style>
+    <materialDesign:Transitioner x:Name="DzTrasitioner" SelectedIndex="0" >
+        <materialDesign:TransitionerSlide OpeningEffect="{materialDesign:TransitionEffect ExpandIn}">
+            <StackPanel Orientation="Vertical" Margin="0,20,0,0" x:Name="WordStackpanel">
+                <ItemsControl Height="60" Width="1210" ItemsSource="{Binding Line1Words}" Background="White" Padding="10,0,0,0">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border  Padding="5,0,5,5"  Margin="0,10,0,0" CornerRadius="5" BorderThickness="0">
+                                <!--控制当前选中单词背景-->
+                                <Border.Style>
+                                    <MultiBinding Converter="{StaticResource ResourceKey=WorderBorderStyleConverter}">
+                                        <MultiBinding.Bindings>
+                                            <Binding ElementName="UserControl"/>
+                                            <Binding Path="WordState"/>
+                                        </MultiBinding.Bindings>
+                                    </MultiBinding>
+                                </Border.Style>
+                                <!--控制单词的字体颜色-->
+                                <TextBlock Text="{Binding Word}"  FontSize="35" >
+                                    <TextBlock.Style>
+                                        <MultiBinding Converter="{StaticResource ResourceKey=WordStyleConverter}">
+                                            <MultiBinding.Bindings>
+                                                <Binding ElementName="UserControl"/>
+                                                <Binding Path="WordState"/>
+                                            </MultiBinding.Bindings>
+                                        </MultiBinding>
+                                    </TextBlock.Style>
+                            <Run> </Run> <Run> </Run>
+                                </TextBlock>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
 
-                        <!--控制单词的字体颜色-->
-                        <TextBlock Text="{Binding Word}"  FontSize="35" >
-                            <TextBlock.Style>
-                                <MultiBinding Converter="{StaticResource ResourceKey=WordStyleConverter}">
-                                    <MultiBinding.Bindings>
-                                        <Binding ElementName="UserControl"/>
-                                        <Binding Path="."/>
-                                    </MultiBinding.Bindings>
-                                </MultiBinding>
-                            </TextBlock.Style>
-                        </TextBlock>
-                    </Border>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+                <ItemsControl Height="60" Grid.Row="1" Width="1210" ItemsSource="{Binding Line2Words}" Background="White" Padding="10,0,0,0">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="5,0,5,5" CornerRadius="5" BorderThickness="0">
+                                <TextBlock Text="{Binding Word}" FontSize="35">
+                            <Run> </Run> <Run> </Run>
+                                </TextBlock>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
 
-        <ItemsControl Height="60" Width="1300" ItemsSource="{Binding Line2Words}" Background="White">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Border Padding="4"   Margin="15,5,0,0" CornerRadius="5" BorderThickness="0">
-                        <TextBlock Text="{Binding Word}" FontSize="35"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30,0,0">
+                    <Border Background="White" Width="800" Height="60" Margin="0,0,0,0">
+                        <TextBox FontSize="32" materialDesign:TextFieldAssist.DecorationVisibility="Collapsed" BorderThickness="0" TextChanged="InputBox_TextChanged" />
                     </Border>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30,0,0">
-            <Border Background="White" Width="800" Height="60" Margin="0,0,0,0">
-                <TextBox FontSize="32"  />
-            </Border>
-            <Border Background="#3c4d5c" Margin="10,0,0,0" Height="60" Width="70" CornerRadius="5">
-                <TextBlock Text="1:00" FontSize="26" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            </Border>
-            <Border Background="#428bca" Margin="10,0,0,0" Height="60" Width="62" CornerRadius="5" BorderBrush="#357ebd">
-                <materialDesign:PackIcon Kind="Refresh" Width="35" Height="35" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            </Border>
-        </StackPanel>
-    </StackPanel>
+                    <Border  Background="#3c4d5c" Margin="10,0,0,0" Height="60" Width="75" CornerRadius="5" MouseLeftButtonUp="ToggleTime_Click" Cursor="Hand">
+                        <TextBlock x:Name="TimeTextBlock" Text="{Binding TimeStr}" Margin="0,0,5,0" FontFamily="Helvetica Neue,Helvetica,Arial,sans-serif" FontSize="26" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <Border Background="#428bca" MouseLeftButtonUp="Refresh_Click" Margin="10,0,0,0" Height="60" Width="62" CornerRadius="5" BorderBrush="#357ebd" Cursor="Hand" >
+                        <materialDesign:PackIcon Kind="Refresh" Width="35" Height="35" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+        </materialDesign:TransitionerSlide>
+
+        <materialDesign:TransitionerSlide OpeningEffect="{materialDesign:TransitionEffect SlideInFromTop}">
+            <materialDesign:Card   x:Name="LoadingBar"  Padding="4" UniformCornerRadius="50" Grid.RowSpan="2" Margin="55" Width="50" Height="50">
+                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Height="40"  Width="40"  Value="50" IsIndeterminate="True" />
+            </materialDesign:Card>
+        </materialDesign:TransitionerSlide>
+    </materialDesign:Transitioner>
+
+    
 </UserControl>
