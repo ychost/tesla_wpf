@@ -270,6 +270,7 @@
     <Compile Include="Rest\RestJsonSerializer.cs" />
     <Compile Include="Rest\RsUserLogin.cs" />
     <Compile Include="Rest\RsUserSettings.cs" />
+    <Compile Include="Route\DzGame\DzGameScore.cs" />
     <Compile Include="Route\DzGame\DzGameView.xaml.cs">
       <DependentUpon>DzGameView.xaml</DependentUpon>
     </Compile>

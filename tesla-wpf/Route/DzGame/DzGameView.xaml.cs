@@ -15,26 +15,47 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MaterialDesignThemes.Wpf.Transitions;
 using tesla_wpf.Model;
+using YEvent;
 
 namespace tesla_wpf.Route.DzGame {
     /// <summary>
     /// DzGame.xaml 的交互逻辑
+    /// <date>2019-3-3</date>
     /// </summary>
     public partial class DzGameView : UserControl, IMenu, IMenuDestroy {
+        /// <summary>
+        /// 视图模型
+        /// </summary>
         public DzGameViewModel ViewModel { get; set; }
+        /// <summary>
+        /// 取消对游戏完成事件的订阅
+        /// </summary>
+        Unsubscibe UnsubscribeCompleteEvent;
+
+        /// <summary>
+        /// 绑定视图模型，订阅游戏完成事件
+        /// </summary>
         public DzGameView() {
             ViewModel = new DzGameViewModel();
             DataContext = ViewModel;
             InitializeComponent();
-            Transitioner.MoveFirstCommand.Execute(null, DzTrasitioner);
+            // 订阅完成游戏事件
+            UnsubscribeCompleteEvent = App.Store.Subscribe(typeof(DzGameCompleteEvent), (s, e) => {
+                Dispatcher.Invoke(() => {
+                    ResultStackpanel.Visibility = Visibility.Visible;
+                    WordStackpanel.Visibility = Visibility.Collapsed;
+                    LoadingBar.Visibility = Visibility.Collapsed;
+                });
+            }, false);
         }
 
         /// <summary>
-        /// 
+        /// 当用户关闭标签
         /// </summary>
         /// <param name="param"></param>
         public void OnDestroy(object param = null) {
-
+            // 取消订阅
+            UnsubscribeCompleteEvent?.Invoke();
         }
 
         /// <summary>
@@ -43,22 +64,30 @@ namespace tesla_wpf.Route.DzGame {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void InputBox_TextChanged(object sender, TextChangedEventArgs e) {
+            // 未刷新出单词敲击是无意义的
+            if (WordStackpanel.Visibility != Visibility.Visible || !ViewModel.HasPrepared()) {
+                return;
+            }
             var inputBox = sender as TextBox;
             if (inputBox.Text == null) {
                 return;
             }
+            // 忽略掉无意义的空格
             var word = inputBox.Text;
             if (word.StartsWith(" ")) {
                 inputBox.Text = null;
                 return;
             }
+            // 只有当包含了空格才对单词进行处理
             if (word.Contains(" ")) {
                 var inputWords = word.Split(' ');
                 ViewModel.MoveNextWord(inputWords[0]);
+                // 递归处理剩下的部分
                 var restText = new StringBuilder();
                 for (int i = 1; i < inputWords.Length; i++) {
                     restText.Append(inputWords[i]);
                 }
+                // 这里会触发 InputBox_TextChanged 方法
                 inputBox.Text = restText.ToString();
             } else {
                 ViewModel.HandleCurrentWord(word);
@@ -71,11 +100,14 @@ namespace tesla_wpf.Route.DzGame {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private async void Refresh_Click(object sender, MouseButtonEventArgs e) {
-            Transitioner.MoveNextCommand.Execute(null, DzTrasitioner);
+            InputBox.Text = null;
+            WordStackpanel.Visibility = Visibility.Collapsed;
+            LoadingBar.Visibility = Visibility.Visible;
             ViewModel.Refresh();
             await Task.Delay(2000);
             Application.Current.Dispatcher.Invoke(() => {
-                Transitioner.MovePreviousCommand.Execute(null, DzTrasitioner);
+                WordStackpanel.Visibility = Visibility.Visible;
+                LoadingBar.Visibility = Visibility.Collapsed;
             });
         }
 

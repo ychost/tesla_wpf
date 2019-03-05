@@ -14,12 +14,22 @@ namespace tesla_wpf.Route.DzGame {
         /// 单词本身
         /// </summary>
         public string Word { get => GetProperty<string>(); set => SetProperty(value); }
+        /// <summary>
+        /// 
+        /// </summary>
         public WordState WordState { get => GetProperty<WordState>(); set => SetProperty(value); }
+        /// <summary>
+        /// 单词的语言
+        /// </summary>
+        public WordLanguage Language { get; set; }
+        /// <summary>
+        /// 单词类型，比如简单，困难
+        /// </summary>
+        public WordType WordType { get; set; }
 
         public DzGameWord() {
             WordState = WordState.Default;
         }
-
     }
 
     /// <summary>
@@ -36,5 +46,16 @@ namespace tesla_wpf.Route.DzGame {
         Wrong,
         // 敲打成功
         Corrected
+    }
+
+    public enum WordLanguage {
+        English = 100,
+        Chinese = 110
+    }
+
+    public enum WordType {
+        Easy = 100,
+        Normal = 110,
+        Hard = 120,
     }
 }

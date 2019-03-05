@@ -20,29 +20,33 @@ namespace tesla_wpf.Route.DzGame {
         /// </summary>
         private int currentIndex;
         /// <summary>
-        /// 错误的击键次数
-        /// </summary>
-        private int wrongKeystore;
-        /// <summary>
-        /// 正确的击键次数
-        /// </summary>
-        private int correctKeystore;
-        /// <summary>
         /// 是否开始了
         /// </summary>
         public bool IsStarted;
+        /// <summary>
+        /// 得分
+        /// </summary>
+        public DzGameScore Score { get; set; }
 
         public Timer CalcTimer;
 
         public DzGameViewModel() {
         }
 
+        /// <summary>
+        /// 第一行的单词
+        /// </summary>
         public List<DzGameWord> Line1Words { get => GetProperty<List<DzGameWord>>(); set => SetProperty(value); }
+        /// <summary>
+        /// 第二行的单词数据
+        /// </summary>
         public List<DzGameWord> Line2Words { get => GetProperty<List<DzGameWord>>(); set => SetProperty(value); }
+
         /// <summary>
         /// 时间
         /// </summary>
         public string TimeStr { get => GetProperty<string>(); set => SetProperty(value); }
+
         /// <summary>
         /// 剩余的秒数
         /// </summary>
@@ -56,6 +60,10 @@ namespace tesla_wpf.Route.DzGame {
             RestSec = 60;
             IsStarted = false;
             TimeHelper.ClearTimeout(CalcTimer);
+            Score = new DzGameScore();
+            Line1Words = FetchOneLineWords();
+            Line1Words[0].WordState = WordState.Typing;
+            Line2Words = FetchOneLineWords();
         }
 
         /// <summary>
@@ -67,14 +75,14 @@ namespace tesla_wpf.Route.DzGame {
             // 单词失败
             if (word.Word != inputedWord) {
                 word.WordState = WordState.Wrong;
-                wrongKeystore += inputedWord.Length;
+                Score.WrongKeystrokes += inputedWord.Length;
+                Score.WrongWords += 1;
                 // 单词正确
             } else {
                 word.WordState = WordState.Corrected;
-                correctKeystore += inputedWord.Length;
+                Score.Correctstrokes += inputedWord.Length + 1;
+                Score.CorrectWords += 1;
             }
-            // 空格是正确的
-            correctKeystore += 1;
             // 换行了
             if (currentIndex == Line1Words.Count - 1) {
                 currentIndex = 0;
@@ -99,16 +107,33 @@ namespace tesla_wpf.Route.DzGame {
                     // 一次游戏完成
                     if (RestSec == 0) {
                         TimeHelper.ClearTimeout(CalcTimer);
-                        Complete();
+                        complete();
                     }
                 });
             }
             var word = Line1Words[currentIndex];
+            // 单词敲打错误
             if (!word.Word.StartsWith(inputedWord)) {
                 word.WordState = WordState.WrongTyping;
             } else {
                 word.WordState = WordState.Typing;
             }
+        }
+
+        /// <summary>
+        /// 完成一次游戏
+        /// </summary>
+        void complete() {
+            App.Store.Dispatch(new DzGameCompleteEvent());
+            IsStarted = false;
+        }
+
+        /// <summary>
+        /// 是否准备好了
+        /// </summary>
+        /// <returns></returns>
+        public bool HasPrepared() {
+            return Line1Words != null && Line2Words != null;
         }
 
         /// <summary>
@@ -121,14 +146,9 @@ namespace tesla_wpf.Route.DzGame {
             return image;
         }
 
-
         /// <summary>
-        /// 完成一次游戏
+        /// 测试 flag
         /// </summary>
-        public void Complete() {
-
-        }
-
         bool flag = true;
         /// <summary>
         /// 获取一行的单词数据
@@ -174,18 +194,19 @@ namespace tesla_wpf.Route.DzGame {
         /// 初始化数据
         /// </summary>
         protected override void InitRuntimeData() {
-            Line1Words = FetchOneLineWords();
-            Line1Words[0].WordState = WordState.Typing;
-            Line2Words = FetchOneLineWords();
             Refresh();
         }
 
 
         protected override void InitDesignData() {
-            Line1Words = FetchOneLineWords();
-            Line1Words[0].WordState = WordState.Typing;
-            Line2Words = FetchOneLineWords();
             Refresh();
         }
+    }
+
+    /// <summary>
+    /// 完成一次打字体验事件
+    /// </summary>
+    public class DzGameCompleteEvent {
+
     }
 }
